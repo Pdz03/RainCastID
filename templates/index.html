@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Google Font link-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
+      rel="stylesheet"
+    />
+
+    <!-- ======= CSS Vendor ======= -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/css/glightbox.min.css"
+      integrity="sha512-T+KoG3fbDoSnlgEXFQqwcTC9AdkFIxhBlmoaFqYaIjq2ShhNwNao9AKaLUPMfwiBPL0ScxAtc+UYbHAgvd+sjQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="static/style/style.css" />
+    <title>RainCast ID - Satu Solusi untuk Indonesia Siaga Hujan</title>
+  </head>
+  <body>
+    <div id="loading">
+      <div id="loading-center">
+        <div id="loading-center-absolute">
+          <div class="object" id="object_one"></div>
+          <div class="object" id="object_two"></div>
+          <div class="object" id="object_three"></div>
+          <div class="object" id="object_four"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top no-background" id="navbar">
+      <div class="container px-4 d-flex align-items-start">
+        <a href="/" class="navbar-brand fw-semibold">
+          <img
+            src="static/assets/images/logo.png"
+            class="logo logo-display"
+            height="45px"
+            alt=""
+          />
+          <img
+            src="static/assets/images/footer-logo.png"
+            class="logo logo-scrolled"
+            height="45px"
+            alt=""
+          />
+          <p class="text-white logo logo-display fs-6">
+            Satu Solusi untuk Indonesia Siaga Hujan
+          </p>
+          <p class="logo logo-scrolled fs-6">
+            Satu Solusi untuk Indonesia Siaga Hujan
+          </p>
+        </a>
+        <!-- <button
+          class="navbar-toggler"
+          data-bs-toggle="toggle"
+          data-bs-target="#mainTarget"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button> -->
+
+        <div class="collapse navbar-collapse gap-3 navbar-menu" id="mainTarget">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a href="coba.html" id="nav-top" class="nav-link fw-bold text-white fs-5"
+                >Beranda</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#features" id="nav-top" class="nav-link fw-bold text-white fs-5">Fitur</a>
+            </li>
+            <li class="nav-item">
+              <a href="#forum" id="nav-top" class="nav-link fw-bold text-white fs-5">Forum</a>
+            </li>
+            <li class="nav-item">
+              <a href="#contact" id="nav-top" class="nav-link fw-bold text-white fs-5"
+                >Hubungi Kami</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" id="nav-top" class="nav-link fw-bold text-white fs-5"
+                ><i class="bi bi-person-circle align-middle"></i
+                >&nbsp;&nbsp;Login/Register</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <nav class="fixed-bottom bg-white w-100 px-2 py-1 navmobile">
+        <ul class="navbar-nav d-flex flex-row justify-content-evenly">
+          <li class="nav-item">
+            <a href="#" class="nav-link fw-bold d-flex flex-column align-items-center"
+              ><i class="bi bi-house-fill fs-3"></i>
+              <small>Beranda</small>
+              </a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="#features" class="nav-link fw-bold d-flex flex-column align-items-center">
+              <i class="bi bi-list fs-3"></i>
+              <small>Fitur</small>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#forum" class="nav-link fw-bold d-flex flex-column align-items-center">
+              <i class="bi bi-people-fill fs-3"></i>
+              <small>Forum</small>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#contact" class="nav-link fw-bold d-flex flex-column align-items-center"
+              ><i class="bi bi-envelope-fill fs-3"></i>
+              <small>Hubungi</small>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link fw-bold d-flex flex-column align-items-center"
+              ><i class="bi bi-person-circle align-middle fs-3"></i>
+              <small>Login</small>
+            </a>
+          </li>
+        </ul>
+    </nav>
+
+    <!--Cuaca modal-->
+    <div class="modal fade" id="cuacaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background-color:#648CFF;">
+            <h1 class="modal-title fs-5" id="cuacaModalLabel">Hasil Prediksi</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="empty"></button>
+          </div>
+          <div class="modal-body">
+            <div class="sub-title">
+              <h4 class="m-0" id="restitle"></h4>
+              <p id="locAPI"></p>
+            </div>
+            <div class="card mb-3 px-3 align-items-end" id="prediksiAPI">
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div id="msg"></div>
+            <button id="btnSaveLoc" type="button" class="btn btn-primary visually-hidden" onclick="eventSaveLoc()">Simpan Lokasi</button>
+            <button id="btnDeleteLoc" type="button" class="btn btn-danger visually-hidden" onclick="eventDeleteLoc()">Hapus Lokasi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <!--Login modal-->
+        <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header text-white" style="background-color:#648CFF;">
+                <h1 class="modal-title fs-5" id="loginModalLabel">Bergabung dengan RainCast ID</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center">
+                  <h3 class="mb-2" id="title-login">Masuk</h3>
+                  <div id="regform" class="visually-hidden">
+                    <h3 class="mb-2" id="title-register">Daftar</h3>
+                    <div class="input-group mb-3" id="fg-username">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Masukkan Username"
+                        aria-label="username"
+                        aria-describedby="button-addon2"
+                        id="form-username"
+                      />
+                    </div>
+                    <h6
+                      class="text-start mb-2"
+                      id="help-username"
+                    ></h6>
+                  </div>
+                  <div class="input-group mb-3" id="fg-email">
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="Masukkan Email"
+                      aria-label="email"
+                      aria-describedby="button-addon2"
+                      id="form-email"
+                    />
+                  </div>
+                  <h6 class="text-start mb-2" id="help-email"></h6>
+                  <div class="input-group mb-1">
+                    <input
+                      type="password"
+                      class="form-control"
+                      placeholder="Masukkan Password"
+                      aria-label="password"
+                      aria-describedby="button-addon2"
+                      id="form-password"
+                    />
+                    <span class="input-group-text" id="basic-addon3">
+                      <i class="bi bi-eye-slash" id="togglePassword">
+                      </i>
+                    </span>
+                  </div>
+                  <h6
+                    class="text-start text-dark mb-2"
+                    id="help-password"
+                  >
+                    Masukkan password dengan 8-10 karakter, angka,
+                    atau spesial karakter (!@#$%^&*)
+                  </h6>
+                  <div id="add-regform" class="visually-hidden">
+                    <div class="input-group mb-3" id="fg-password2">
+                      <input
+                        type="password"
+                        class="form-control"
+                        placeholder="Masukkan Konfirmasi Password"
+                        aria-label="password-confirm"
+                        aria-describedby="button-addon2"
+                        id="form-password2"
+                      />
+                      <span
+                        class="input-group-text"
+                        id="basic-addon3"
+                      >
+                        <i
+                          class="bi bi-eye-slash"
+                          id="togglePassword2"
+                        >
+                        </i>
+                      </span>
+                    </div>
+                    <h6
+                      class="text-start text-danger mb-2"
+                      id="help-password2"
+                    ></h6>
+                    <button
+                      class="btn btn-lg btn-block mb-2 btn-rcprimary"
+                      onclick="register()"
+                    >
+                      Daftar
+                    </button>
+                    <button
+                      class="btn btn-lg btn-block btn-rcdangerol mb-2"
+                      onclick="resetform_register()"
+                    >
+                      Reset
+                    </button>
+                    <hr class="my-2" />
+                    <p
+                      style="
+                        color: black;
+                        font-size: medium;
+                        font-style: normal;
+                      "
+                    >
+                      Sudah punya akun?
+                      <a
+                        onclick="openlogin()"
+                        class=""
+                        style="cursor: pointer"
+                        >Masuk di sini</a
+                      >
+                    </p>
+                  </div>
+                  <div id="add-logform">
+                    <button
+                      class="btn btn-lg btn-block mb-2 btn-rcprimary"
+                      onclick="login()"
+                    >
+                      Masuk
+                    </button>
+                    <button
+                      class="btn btn-lg btn-block mb-2 btn-rcdangerol"
+                      onclick="resetform_login()"
+                    >
+                      Daftar
+                    </button>
+                    <hr class="my-2" />
+                    <p
+                      style="
+                        color: black;
+                        font-size: medium;
+                        font-style: normal;
+                      "
+                    >
+                      Belum punya akun?
+                      <a
+                        onclick="openregister()"
+                        style="cursor: pointer"
+                        class=""
+                        >Daftar di sini</a
+                      >
+                    </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    <!--Home Sections-->
+
+    <section id="home" class="home">
+      <div class="container main_home">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h1 class="text-white">Prediksi Curah Hujan</h1>
+            <fieldset class="border border-white border-3 rounded" style="min-height:450px">
+              <legend>
+                <button class="btn btn-option active" id="btn-minputAPI" onclick="openAPI()">Input Lokasi</button>
+                <button class="btn btn-option" id="btn-minputManual" onclick="openManual()">Input Manual</button>
+              </legend>
+              <div class="form-group mt-5 px-3" id="inputAPI">
+                <div class="text-white">
+                  <h4>Lihat Prediksi Curah Hujan Berdasarkan Lokasimu!</h4>
+              
+                <div id="saved-loc"><p>Lokasi tersimpan: <b>(Belum ada lokasi tersimpan)</b></p>
+                
+                </div>
+                <hr>
+                <div class="input-group justify-content-center">
+                  <button id="btnPredictAPI" data-bs-toggle="modal" data-bs-target="#cuacaModal" class="btn btn-orange px-5 disabled" onclick="predictAPILoc('saved')">Prediksi Lokasi Tersimpan</button>
+                  <button id="btnLocDetect" data-bs-toggle="modal" data-bs-target="#cuacaModal" class="btn btn-orange px-5 mt-4" onclick="predictAPILoc('unsaved')">Prediksi Lokasi Saat Ini</button>
+                </div>
+              </div>
+              </div>
+              <div class="form-group visually-hidden" id="inputManual">
+                <label for="temperature" class="form-label text-white fw-bold"
+                  >Temperatur Udara</label
+                >
+                <div class="input-group mb-3">
+                  <input
+                    id="tempInput"
+                    type="number"
+                    class="form-control"
+                    placeholder="Masukkan temperatur udara ..."
+                    aria-describedby="temperature"
+                  />
+                  <span class="input-group-text satuan" id="temperature"
+                    >°C</span
+                  >
+                </div>
+                <label for="kelembaban" class="form-label text-white fw-bold"
+                  >Kelembaban Udara</label
+                >
+                <div class="input-group mb-3">
+                  <input
+                    id="lembabInput"
+                    type="number"
+                    class="form-control"
+                    placeholder="Masukkan intensitas kelembaban udara ..."
+                    aria-describedby="kelembaban"
+                  />
+                  <span class="input-group-text satuan" id="kelembaban">%</span>
+                </div>
+                <label for="kecepatan" class="form-label text-white fw-bold"
+                  >Kecepatan Angin</label
+                >
+                <div class="input-group mb-3">
+                  <input
+                    id="cepatInput"
+                    type="number"
+                    class="form-control"
+                    placeholder="Masukkan kecepatan angin ..."
+                    aria-describedby="kecepatan"
+                  />
+                  <span class="input-group-text satuan" id="kecepatan"
+                    >m/s</span
+                  >
+                </div>
+                <label for="temperature" class="form-label text-white fw-bold"
+                  >Tekanan Udara</label
+                >
+                <div class="input-group mb-3">
+                  <input
+                    id="tekananInput"
+                    type="number"
+                    class="form-control"
+                    placeholder="Masukkan tekanan udara ..."
+                    aria-describedby="tekanan"
+                  />
+                  <span class="input-group-text satuan" id="tekanan">hPa</span>
+                </div>
+                <div class="input-group justify-content-center">
+                  <button id="btnPredictManual" data-bs-toggle="modal" data-bs-target="#cuacaModal" class="btn btn-orange px-5 disabled" onclick="predictManual()">Mulai Prediksi</button>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="col-md-6 d-flex justify-content-center flex-wrap">
+            <div class="home_text px-2">
+              <h1 class="text-white">Bergabung bersama kami di RainCast ID</h1>
+            </div>
+            <button data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-orange mt-4 px-5">LOGIN</button>
+          </div>
+          <div class="scrooldown">
+            <a href="#features" id="scrollDown"
+              ><i class="bi bi-caret-down-fill"></i
+            ></a>
+          </div>
+        </div>
+        <!--End off row-->
+      </div>
+      <!--End off container -->
+      <div class="custom-shape-divider-bottom-1709026157">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
+            class="shape-fill"
+          ></path>
+        </svg>
+      </div>
+    </section>
+    <!--End off Home Sections-->
+
+    <section id="features" class="features">
+      <div class="container justify-content-center">
+        <div class="main_features text-center">
+          <div class="head_title mt-5"><h2>Fitur-fitur RainCast ID</h2></div>
+          <hr />
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <div class="features_item sm-m-top-30">
+                <div class="f_item_icon">
+                  <i class="icon icon-diamond6"></i>
+                </div>
+                <div class="f_item_text">
+                  <h3>Prediksi Harian</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+                    ad eaque neque. Explicabo porro minima expedita! Nostrum
+                    iure itaque harum vel deleniti.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="features_item sm-m-top-30">
+                <div class="f_item_icon">
+                  <i class="icon icon-layers2"></i>
+                </div>
+                <div class="f_item_text">
+                  <h3>Prediksi 3 hari ke depan</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+                    ad eaque neque. Explicabo porro minima expedita! Nostrum
+                    iure itaque harum vel deleniti.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="features_item sm-m-top-30">
+                <div class="f_item_icon">
+                  <i class="icon icon-business-32"></i>
+                </div>
+                <div class="f_item_text">
+                  <h3>Notifikasi harian</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+                    ad eaque neque. Explicabo porro minima expedita! Nostrum
+                    iure itaque harum vel deleniti.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="features_item sm-m-top-30">
+                <div class="f_item_icon">
+                  <i class="icon icon-business-32"></i>
+                </div>
+                <div class="f_item_text">
+                  <h3>Notifikasi harian</h3>
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+                    ad eaque neque. Explicabo porro minima expedita! Nostrum
+                    iure itaque harum vel deleniti.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End off row -->
+      </div>
+      <!-- End off container -->
+    </section>
+
+    <section id="slider" class="slider">
+      <div class="maindrag">
+      <div class="swiper">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+          <!-- Slides -->
+          <div
+            class="swiper-slide"
+            style="background-image: url(static/assets/images/drag1.png)"
+          ></div>
+          <div
+            class="swiper-slide"
+            style="background-image: url(static/assets/images/drag2.png)"
+          ></div>
+          <div
+            class="swiper-slide"
+            style="background-image: url(static/assets/images/drag3.png)"
+          ></div>
+          <div
+          class="swiper-slide"
+          style="background-image: url(static/assets/images/drag4.png)"
+        ></div>
+        <div
+          class="swiper-slide"
+          style="background-image: url(static/assets/images/drag5.png)"
+        ></div>
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- If we need navigation buttons -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        <!-- If we need scrollbar -->
+        <div class="swiper-scrollbar"></div>
+      </div>
+    </section>
+
+    <section id="forum" class="forum">
+      <div class="container justify-content-center">
+        <div class="main_features text-center">
+          <div class="head_title mt-5"><h2>Forum Diskusi RainCast ID</h2></div>
+          <hr />
+          <div class="row justify-content-center">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero numquam corrupti velit deleniti dolorem enim asperiores cum nobis id, veniam est totam dolorum. Eligendi delectus soluta consectetur! Id dolor optio ut rerum eaque, laudantium ex, dignissimos cupiditate, autem excepturi amet nisi asperiores suscipit doloribus mollitia distinctio. Fuga, accusamus voluptatem! Repellendus dignissimos obcaecati deserunt molestiae maiores vel. Ad aperiam asperiores quo saepe, dolorem unde suscipit at sint sunt numquam aliquam maiores magni consequatur, provident quasi nulla voluptatum quos ullam alias minima, eos dolores? Recusandae accusamus laborum dicta explicabo quas. Provident laboriosam mollitia maxime ipsum iusto quisquam eaque? Placeat aut sit, adipisci atque voluptatem obcaecati a ipsam dignissimos quos dolorem numquam in error ex rem, corporis porro nihil ab harum nemo nam animi rerum ipsa. Voluptas fugit sunt inventore maiores provident expedita sint nesciunt magnam optio aperiam eos illum alias atque delectus quae commodi doloremque, quas, pariatur tempore nisi aliquid labore fuga. In quae numquam, velit expedita suscipit laboriosam fuga ipsam itaque quia explicabo minus ipsa maxime asperiores sed temporibus reiciendis iusto enim ullam accusantium commodi! Vero a id molestias sint aut quam est voluptatum commodi quisquam fugiat error nisi architecto quis necessitatibus exercitationem ratione dignissimos doloribus aspernatur, provident minima. Illum, assumenda!
+          </div>
+        </div>
+        <!-- End off row -->
+      </div>
+      <!-- End off container -->
+    </section>
+
+    <section id="contact">
+      <div class="title text-center fw-bold">
+        Please, contact me here!
+      </div>
+      <div class="contact-body row justify-content-center m-0 pt-3">
+        <div class="col-lg-6">
+          <div class="contact-head">
+            <div class="card-body">
+              <h3 class="card-title">You can send me email in here!</h3>
+              <hr>
+              <form id="mail-form">
+                <div class="mb-3">
+                  <label for="exampleFormControlInput1" class="form-label"
+                    >Email address</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="name@example.com"
+                    name="user_mail"
+                    required
+                  />
+                </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Input your name ..."
+                  name="user_name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label"
+                  >Message</label
+                >
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="4"
+                  placeholder="Input your message ..."
+                  name="message"
+                  required
+                ></textarea>
+              </div>
+              <input type="submit" class="btn btn-light" value="Send Email">
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="contact-head">
+            <div class="card-body">
+              <h3 class="card-title">
+                Follow my contact and social media below!
+              </h3>
+              <hr>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-solid fa-square-envelope"></i>
+                  <a class="" onclick="mailfocus()" style="cursor: pointer;">
+                  syaifudinfendip@gmail.com
+                </a>
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-whatsapp"></i> 
+                  <a href="https://wa.me/6289649474381"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  +62 896 4947 4381</a>
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-linkedin"></i>
+                  <a
+                    href="https://www.linkedin.com/in/pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Prasetyo</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-facebook"></i>
+                  <a
+                    href="https://www.facebook.com/Pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Pendoelz</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-instagram"></i>
+                  <a
+                    href="https://www.instagram.com/fendypdz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >@fendypdz</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-telegram"></i>
+                  <a
+                    href="https://t.me/pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Prasetyo</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="fixed text-center">
+        <p class="fw-bold">Copyright &copy; 2024 | RainCast Indonesia</p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+      integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/js/glightbox.min.js"
+      integrity="sha512-S/H9RQ6govCzeA7F9D0m8NGfsGf0/HjJEiLEfWGaMCjFzavo+DkRbYtZLSO+X6cZsIKQ6JvV/7Y9YMaYnSGnAA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"
+      integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs/dist/purecounter_vanilla.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/controller/home.js"></script>
+    <script src="/static/js/controller/API-cuaca.js"></script>
+    <script src="/static/js/controller/predict-manual.js"></script>
+    <script src="/static/js/controller/indexedDB.js"></script>
+    <script src="/static/js/templates/template-view.js"></script>
+  </body>
+</html>
