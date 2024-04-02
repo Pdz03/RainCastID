@@ -44,6 +44,10 @@ body {
     display:none;
 }
 
+.nav-link.navmob.active{
+    color:#fc6a42;
+}
+
 @media (min-width: 1000px) {
     .navmobile{
         display:none;
@@ -179,7 +183,7 @@ fieldset {
 .scrooldown{
     position: absolute;
     left: 48.5%;
-    bottom: -25%;
+    bottom: -40%;
     width: 40px;
     height: 40px;
     line-height: 37px;
@@ -187,6 +191,12 @@ fieldset {
     border-radius: 50%;
     text-align: center;
     z-index: 3;
+}
+
+@media (max-width: 999px) {
+    .scrooldown{
+        bottom: -30%;
+    }
 }
 .scrooldown a i{
     font-size:1,5rem;

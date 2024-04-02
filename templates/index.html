@@ -97,23 +97,23 @@
         <div class="collapse navbar-collapse gap-3 navbar-menu" id="mainTarget">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a href="coba.html" id="nav-top" class="nav-link fw-bold text-white fs-5"
+              <a href="#" class="nav-link nav-top fw-bold text-white fs-5"
                 >Beranda</a
               >
             </li>
             <li class="nav-item">
-              <a href="#features" id="nav-top" class="nav-link fw-bold text-white fs-5">Fitur</a>
+              <a href="#features" id="btnFitur" class="nav-link nav-top fw-bold text-white fs-5">Fitur</a>
             </li>
             <li class="nav-item">
-              <a href="#forum" id="nav-top" class="nav-link fw-bold text-white fs-5">Forum</a>
+              <a href="#forum" id="btnForum" class="nav-link nav-top fw-bold text-white fs-5">Forum</a>
             </li>
             <li class="nav-item">
-              <a href="#contact" id="nav-top" class="nav-link fw-bold text-white fs-5"
+              <a href="#contact" id="btnKontak" class="nav-link nav-top fw-bold text-white fs-5"
                 >Hubungi Kami</a
               >
             </li>
             <li class="nav-item">
-              <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" id="nav-top" class="nav-link fw-bold text-white fs-5"
+              <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link nav-top fw-bold text-white fs-5"
                 ><i class="bi bi-person-circle align-middle"></i
                 >&nbsp;&nbsp;Login/Register</a
               >
@@ -125,32 +125,32 @@
     <nav class="fixed-bottom bg-white w-100 px-2 py-1 navmobile">
         <ul class="navbar-nav d-flex flex-row justify-content-evenly">
           <li class="nav-item">
-            <a href="#" class="nav-link fw-bold d-flex flex-column align-items-center"
+            <a href="#" id="btnHomeMob" class="nav-link fw-bold d-flex flex-column align-items-center navmob active"
               ><i class="bi bi-house-fill fs-3"></i>
               <small>Beranda</small>
               </a
             >
           </li>
           <li class="nav-item">
-            <a href="#features" class="nav-link fw-bold d-flex flex-column align-items-center">
+            <a href="#features" id="btnFiturMob" class="nav-link fw-bold d-flex flex-column align-items-center navmob">
               <i class="bi bi-list fs-3"></i>
               <small>Fitur</small>
             </a>
           </li>
           <li class="nav-item">
-            <a href="#forum" class="nav-link fw-bold d-flex flex-column align-items-center">
+            <a href="#forum" id="btnForumMob" class="nav-link fw-bold d-flex flex-column align-items-center navmob">
               <i class="bi bi-people-fill fs-3"></i>
               <small>Forum</small>
             </a>
           </li>
           <li class="nav-item">
-            <a href="#contact" class="nav-link fw-bold d-flex flex-column align-items-center"
+            <a href="#contact" id="btnKontakMob" class="nav-link fw-bold d-flex flex-column align-items-center navmob"
               ><i class="bi bi-envelope-fill fs-3"></i>
               <small>Hubungi</small>
             </a>
           </li>
           <li class="nav-item">
-            <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link fw-bold d-flex flex-column align-items-center"
+            <a href="" id="btnLoginMob" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link fw-bold d-flex flex-column align-items-center navmob"
               ><i class="bi bi-person-circle align-middle fs-3"></i>
               <small>Login</small>
             </a>
@@ -337,7 +337,7 @@
     <section id="home" class="home">
       <div class="container main_home">
         <div class="row align-items-center">
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <h1 class="text-white">Prediksi Curah Hujan</h1>
             <fieldset class="border border-white border-3 rounded" style="min-height:450px">
               <legend>
@@ -352,7 +352,7 @@
                 
                 </div>
                 <hr>
-                <div class="input-group justify-content-center">
+                <div class="input-group justify-content-center px-4">
                   <button id="btnPredictAPI" data-bs-toggle="modal" data-bs-target="#cuacaModal" class="btn btn-orange px-5 disabled" onclick="predictAPILoc('saved')">Prediksi Lokasi Tersimpan</button>
                   <button id="btnLocDetect" data-bs-toggle="modal" data-bs-target="#cuacaModal" class="btn btn-orange px-5 mt-4" onclick="predictAPILoc('unsaved')">Prediksi Lokasi Saat Ini</button>
                 </div>
@@ -424,7 +424,7 @@
 
           <div class="col-md-6 d-flex justify-content-center flex-wrap">
             <div class="home_text px-2">
-              <h1 class="text-white">Bergabung bersama kami di RainCast ID</h1>
+              <p class="text-white display-2 fw-bold">Bergabung bersama kami di RainCast ID</p>
             </div>
             <button data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-orange mt-4 px-5">LOGIN</button>
           </div>
@@ -459,7 +459,7 @@
           <div class="head_title mt-5"><h2>Fitur-fitur RainCast ID</h2></div>
           <hr />
           <div class="row justify-content-center">
-            <div class="col-5">
+            <div class="col-md-6">
               <div class="features_item sm-m-top-30">
                 <div class="f_item_icon">
                   <i class="icon icon-diamond6"></i>
@@ -474,7 +474,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-5">
+            <div class="col-md-6">
               <div class="features_item sm-m-top-30">
                 <div class="f_item_icon">
                   <i class="icon icon-layers2"></i>
@@ -489,7 +489,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-5">
+            <div class="col-md-6">
               <div class="features_item sm-m-top-30">
                 <div class="f_item_icon">
                   <i class="icon icon-business-32"></i>
@@ -504,7 +504,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-5">
+            <div class="col-md-6">
               <div class="features_item sm-m-top-30">
                 <div class="f_item_icon">
                   <i class="icon icon-business-32"></i>
