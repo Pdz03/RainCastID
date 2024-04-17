@@ -4,12 +4,13 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import jwt
 from werkzeug.utils import secure_filename
+from predict import predictFunction
 
 app = Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
 # app.config["UPLOAD_FOLDER"] = "./static/profile_pics"
 
-SECRET_KEY = "DJOURNEY"
+SECRET_KEY = "RAINCASTID"
 
 MONGODB_CONNECTION_STRING = "mongodb+srv://iffahrisma12:sparta@cluster0.ntlxsm9.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(MONGODB_CONNECTION_STRING)
@@ -23,6 +24,10 @@ def home():
     # media = list(db.media.find({}))
     return render_template('index.html')
 
+@app.route('/getdata')
+def getData():
+    data = predictFunction.ambildata()
+    print(data)
 
 @app.route('/auth_login')
 def auth_login():

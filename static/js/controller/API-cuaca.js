@@ -135,6 +135,14 @@ function predictAPILoc(status){
 }
 
 async function getWeatherData(lat, long, id, store){
+  $.ajax({
+    type: "GET",
+    url: "/getdata",
+    data: {},
+    success: function (response) {
+      console.log('berhasil');
+    }
+  })
   const contentContainer = document.querySelector('#prediksiAPI');
   let APILoc ='';
   if (id !== ''){
@@ -193,68 +201,106 @@ async function getWeatherData(lat, long, id, store){
       const waktu = jam + ":" + menit.toString().padStart(2, "0");
       const imgTime = getTimeImage(waktu);
 
-      template += `
-      <div class="row g-0 p-2 align-items-center">
-        <div class="col-md-3 d-flex flex-wrap justify-content-center">
-          <h5 class="text-center">${waktu}</h5>
-          <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
-        </div>
-        <div class="col-md-9">
-          <div class="card-body">
-            <div class="container w-100">
-              <div class="row">
-                <div class="col-6 pt-2">
-                  <div class="row align-items-center">
-                    <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
-                    <div class="col-10">                          
-                      <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
-                      <p class="card-text">${(listResult[i].main.temp / 10).toFixed(2)} °C</p>
+      $.ajax({
+        type: "GET",
+        url: "/getdata",
+        data: {},
+        success: function (response) {
+          const minmax = response.data.minmax[0];
+
+          let dataNormal = {
+            normalsuhu : ((listResult[i].main.temp / 10)- minmax.x0min) / (minmax.x0max - minmax.x0min),
+            normallembab : (listResult[i].main.humidity - minmax.x1min) / (minmax.x1max - minmax.x1min),
+            normalcepat : (listResult[i].wind.speed - minmax.x2min) / (minmax.x2max - minmax.x2min),
+            normaltekanan : (listResult[i].main.pressure - minmax.x3min) / (minmax.x3max - minmax.x3min),
+          }
+
+          $.ajax({
+            type: "POST",
+            url: "/predict",
+            data: {
+              suhu_give: dataNormal.normalsuhu,
+              kelembaban_give: dataNormal.normallembab,
+              kecepatan_give: dataNormal.normalcepat,
+              tekanan_give: dataNormal.normaltekanan,
+            },
+            success: function (response) {
+              let hasil = (response.data.hasil).toFixed(2);
+              let klasifikasi = getClass(hasil).classPredict;
+              let warning = getClass(hasil).warning;
+              // $(`#curahhujan[${i}]`).text(`Hasil Prediksi Curah Hujan: ${hasil} mm (${klasifikasi})`)
+              //                 .removeClass('text-danger')
+              // $('#warning').text(warning)
+
+              template += `
+              <div class="row g-0 p-2 align-items-center">
+                <div class="col-md-3 d-flex flex-wrap justify-content-center">
+                  <h5 class="text-center">${waktu}</h5>
+                  <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
+                </div>
+                <div class="col-md-9">
+                  <div class="card-body">
+                    <div class="container w-100">
+                      <div class="row">
+                        <div class="col-6 pt-2">
+                          <div class="row align-items-center">
+                            <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
+                            <div class="col-10">                          
+                              <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
+                              <p class="card-text">${(listResult[i].main.temp / 10).toFixed(2)} °C</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6 pt-2">
+                          <div class="row align-items-center">
+                            <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
+                            <div class="col-10">                     
+                              <h6 class="card-title m-0">Kelembaban Udara</h6>
+                              <p class="card-text">${listResult[i].main.humidity} %</p>
+                            </div> 
+                          </div>   
+                        </div>
+                        <div class="col-6 pt-2">
+                          <div class="row align-items-center">
+                            <div class="col-2">
+                              <i class="bi bi-wind fs-2"></i>
+                            </div>
+                            <div class="col-10">
+                              <h6 class="card-title m-0">Kecepatan Udara</h6>
+                              <p class="card-text">${listResult[i].wind.speed} m/s</p>
+                            </div> 
+                          </div>              
+                        </div>
+                        <div class="col-6 pt-2">
+                          <div class="row align-items-center">
+                            <div class="col-2">
+                              <i class="bi bi-chevron-double-down fs-2"></i>
+                            </div>
+                            <div class="col-10">
+                              <h6 class="card-title m-0">Tekanan Udara</h6>
+                              <p class="card-text">${listResult[i].main.pressure} hPa</p>                           
+                            </div>  
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                      <h6 class="card-title m-0" id="curahhujan">Hasil Prediksi Curah Hujan: ${hasil} mm (${klasifikasi})</h6>
+                      <p class="card-text text-danger" id="warning">${warning}
+                    </p> 
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-6 pt-2">
-                  <div class="row align-items-center">
-                    <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
-                    <div class="col-10">                     
-                      <h6 class="card-title m-0">Kelembaban Udara</h6>
-                      <p class="card-text">${listResult[i].main.humidity} %</p>
-                    </div> 
-                  </div>   
-                </div>
-                <div class="col-6 pt-2">
-                  <div class="row align-items-center">
-                    <div class="col-2">
-                      <i class="bi bi-wind fs-2"></i>
-                    </div>
-                    <div class="col-10">
-                      <h6 class="card-title m-0">Kecepatan Udara</h6>
-                      <p class="card-text">${listResult[i].wind.speed} m/s</p>
-                    </div> 
-                  </div>              
-                </div>
-                <div class="col-6 pt-2">
-                  <div class="row align-items-center">
-                    <div class="col-2">
-                      <i class="bi bi-chevron-double-down fs-2"></i>
-                    </div>
-                    <div class="col-10">
-                      <h6 class="card-title m-0">Tekanan Udara</h6>
-                      <p class="card-text">${listResult[i].main.pressure} hPa</p>                           
-                    </div>  
-                  </div>
-                </div>
               </div>
-              <hr>
-              <div class="row">
-                <h6 class="card-title m-0">Prediksi Curah Hujan: 68 mm (Hujan Ringan)</h6>
-                <p class="card-text text-danger">WASPADA HUJAN RINGAN!</p> 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      `;
-      contentContainer.innerHTML = template;
+              `;
+              contentContainer.innerHTML = template;
+            },
+          });
+
+         
+        }
+      })
     }
   }
 }

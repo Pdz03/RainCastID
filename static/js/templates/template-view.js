@@ -50,7 +50,11 @@ const skeletonPredictLoc = (row) => {
                       </div>
                       <hr>
                       <div class="row">
-                        <h6 class="card-title m-0 skeleton skeleton-title2"></h6>
+                      <h6 class="card-title m-0 text-danger" id="curahhujan[${i}]">SEDANG PROSES PERHITUNGAN PREDIKSI         <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div></h6>
+                      <p class="card-text text-danger" id="warning">
+                    </p> 
                       </div>
                     </div>
                   </div>
