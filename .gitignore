@@ -1,3 +1,5 @@
 /venv
 /__pycache__
+/.ipynb_checkpoints
 .vercel
+__pycache__/main.cpython-311.pyc
