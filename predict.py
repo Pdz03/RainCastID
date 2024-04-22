@@ -4,8 +4,6 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import pandas as pd
 import numpy as np
-import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import keras as tfkeras
 
 class predictFunction:
