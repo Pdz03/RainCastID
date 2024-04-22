@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import pandas as pd
 import numpy as np
-import keras as tfkeras
+import tensorflow.keras as tfkeras
 
 class predictFunction:
     def ambildata():
