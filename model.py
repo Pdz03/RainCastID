@@ -33,8 +33,6 @@ for dataT in dataUji:
     y_train.append((dataT['y'] - dataMinMax[0]['ymin'])/(dataMinMax[0]['ymax'] - dataMinMax[0]['ymin']))
     y_true.append(dataT['y'])
 
-print(type(x_train))
-
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(100, activation="relu"),
     tf.keras.layers.Dense(1)
@@ -51,7 +49,7 @@ model.fit(np.array(x_train), np.array(y_train), steps_per_epoch=20, epochs=250)
 # Evaluasi
 model.evaluate(np.array(x_val), np.array(y_val))
 
-model.save('static/predict-model/PCH-model5.keras')
+model.save('static/predict-model/PCH-model6.keras')
 
 # y_pred = model.predict(np.array(x_test))
 

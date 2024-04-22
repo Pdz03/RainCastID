@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-import tensorflow as tf
+import tensorflow.keras as tfkeras
 
 class predictFunction:
     def ambildata():
@@ -340,7 +340,7 @@ class predictFunction:
 
         input = np.array(listInput)
 
-        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+        model = tfkeras.models.load_model('static/predict-model/PCH-model5.keras')
 
         output = model.predict(input)
 
@@ -377,7 +377,7 @@ class predictFunction:
 
         input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
 
-        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+        model = tfkeras.models.load_model('static/predict-model/PCH-model5.keras')
 
         output = model.predict(input)
 
