@@ -4,6 +4,7 @@ import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
 
+
 dataLatih = list(db.datalatih.find({},{"_id": False}))
 dataValid = list(db.datavalid.find({},{"_id": False}))
 dataUji = list(db.datauji.find({},{"_id": False}))
