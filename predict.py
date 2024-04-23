@@ -4,7 +4,9 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import pandas as pd
 import numpy as np
-import tensorflow.keras as tfkeras
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import tensorflow as tf
 
 class predictFunction:
     def ambildata():
@@ -338,7 +340,7 @@ class predictFunction:
 
         input = np.array(listInput)
 
-        model = tfkeras.models.load_model('static/predict-model/PCH-model5.keras')
+        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
 
         output = model.predict(input)
 
@@ -375,7 +377,7 @@ class predictFunction:
 
         input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
 
-        model = tfkeras.models.load_model('static/predict-model/PCH-model5.keras')
+        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
 
         output = model.predict(input)
 
