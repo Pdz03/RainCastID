@@ -268,7 +268,7 @@ async function getWeatherData(lat, long, id, store){
   console.log(dataAPI);
       $.ajax({
         type: "POST",
-        url: "/predictModelAPI",
+        url: "/predictAPI",
         data: JSON.stringify(dataAPI),
         contentType: "application/json",
         success: function (response) {

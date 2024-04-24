@@ -4,113 +4,12 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import pandas as pd
 import numpy as np
-import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-import tensorflow as tf
+# import os
+# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# import tensorflow as tf
 
-class predictFunction:
-    def ambildata():
-        data_uji = list(db.datacurahhujan.find({},{'_id':False}))
-        data_minmax = list(db.dataminmax.find({},{'_id':False}))
-
-        listdata = []
-        listnormaldata = []
-        for i in range(len(data_uji)):
-            data = {
-                "x0": round(data_uji[i]['x0'], 2),
-                "x1": round(data_uji[i]['x1'], 2),
-                "x2": round(data_uji[i]['x2'], 2),
-                "x3": round(data_uji[i]['x3'], 2),
-                "y": round(data_uji[i]['y'], 2),
-            }
-
-            x0normal = (data_uji[i]['x0'] - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min'])
-            x1normal = (data_uji[i]['x1'] - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min'])
-            x2normal = (data_uji[i]['x2'] - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min'])
-            x3normal = (data_uji[i]['x3'] - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])
-            ynormal = (data_uji[i]['y'] - data_minmax[0]['ymin'])/(data_minmax[0]['ymax'] - data_minmax[0]['ymin'])
-    
-            datanormalisasi = {
-                "x0": round(x0normal, 2),
-                "x1": round(x1normal, 2),
-                "x2": round(x2normal, 2),
-                "x3": round(x3normal, 2),
-                "y": round(ynormal, 2)
-            }
-            listnormaldata.append(datanormalisasi)
-            listdata.append(data)
-        return {'listdata': listdata, 'listnormaldata': listnormaldata, "minmax": data_minmax}
-    
-
-    def upload_data():
-        if "file_give" in request.files:
-            time = datetime.now().strftime("%m%d%H%M%S")
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            filenamefix = f"datauji-{time}.{extension}"
-            file.save("./static/assets/upload_data/" + filenamefix)
-
-        if "confirm_give" in request.form:
-            db.datacurahhujan.delete_many({})
-            db.dataminmax.delete_many({})
-
-        df = pd.read_excel(f'./static/assets/upload_data/{filenamefix}', sheet_name='Sheet2', decimal=',')
-        
-        listid = []
-        listx0 = []
-        listx1 = []
-        listx2 = []
-        listx3 = []
-        listy = []
-        list=[]
-        for i in df.index:
-            id = df['kode bln'][i]
-            x0 = float(df["x0"][i])
-            x1 = float(df["x1"][i])
-            x2 = float(df["x2"][i])
-            x3 = float(df["x3"][i])
-            y = float(df["y"][i])
-            listid.append(id)
-            listx0.append(x0)
-            listx1.append(x1)
-            listx2.append(x2)
-            listx3.append(x3)
-            listy.append(y)
-
-            doc = {
-                "idbln": id,
-                "x0": x0,
-                "x1": x1,
-                "x2": x2,
-                "x3": x3,
-                "y": y,
-            }
-            list.append(doc)
-
-        listminmax = {
-            "x0min": min(listx0),
-            "x0max": max(listx0),
-            "x1min": min(listx1),
-            "x1max": max(listx1),
-            "x2min": min(listx2),
-            "x2max": max(listx2),
-            "x3min": min(listx3),
-            "x3max": max(listx3),
-            "ymin": min(listy),
-            "ymax": max(listy),
-        }
-
-        db.datacurahhujan.insert_many(list)
-        db.dataminmax.insert_one(listminmax)
-
-    def predict():
-        # Pengambilan form data dari client
-        suhu_receive = float(request.form.get("suhu_give"))
-        kelembaban_receive = float(request.form.get("kelembaban_give"))
-        kecepatan_receive = float(request.form.get("kecepatan_give"))
-        tekanan_receive = float(request.form.get("tekanan_give"))
-
+class predictJST:
+    def JSTimplementation():
         def sigmoid(x):
             return 1 / (1 + np.exp(-x))
 
@@ -267,8 +166,7 @@ class predictFunction:
                         y_preds = np.apply_along_axis(self.feedforward, 1, data)    
                         loss = mse_loss(all_y_trues, y_preds)
                         print (f"Epoch {epoch} loss: {loss}")
-
-
+        
         # Pengambilan data dari mongoDB
         data_uji = list(db.datacurahhujan.find({},{'_id':False}))
         data_minmax = list(db.dataminmax.find({},{'_id':False}))
@@ -304,12 +202,120 @@ class predictFunction:
         # Pengambilan data set dan data output historis berdasarkan data yang dinormalisasi
         dataset = np.array(sampel_input)
         all_y_trues = np.array(sampel_output)
-
         # Pengambilan fungsi JST dengan parameter data set dan data output historis
         network = OurNeuralNetwork()
         network.train(dataset, all_y_trues)
 
+        return network
+
+
+class predictFunction:
+    def ambildata():
+        data_uji = list(db.datacurahhujan.find({},{'_id':False}))
+        data_minmax = list(db.dataminmax.find({},{'_id':False}))
+
+        listdata = []
+        listnormaldata = []
+        for i in range(len(data_uji)):
+            data = {
+                "x0": round(data_uji[i]['x0'], 2),
+                "x1": round(data_uji[i]['x1'], 2),
+                "x2": round(data_uji[i]['x2'], 2),
+                "x3": round(data_uji[i]['x3'], 2),
+                "y": round(data_uji[i]['y'], 2),
+            }
+
+            x0normal = (data_uji[i]['x0'] - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min'])
+            x1normal = (data_uji[i]['x1'] - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min'])
+            x2normal = (data_uji[i]['x2'] - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min'])
+            x3normal = (data_uji[i]['x3'] - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])
+            ynormal = (data_uji[i]['y'] - data_minmax[0]['ymin'])/(data_minmax[0]['ymax'] - data_minmax[0]['ymin'])
+    
+            datanormalisasi = {
+                "x0": round(x0normal, 2),
+                "x1": round(x1normal, 2),
+                "x2": round(x2normal, 2),
+                "x3": round(x3normal, 2),
+                "y": round(ynormal, 2)
+            }
+            listnormaldata.append(datanormalisasi)
+            listdata.append(data)
+        return {'listdata': listdata, 'listnormaldata': listnormaldata, "minmax": data_minmax}
+    
+
+    def upload_data():
+        if "file_give" in request.files:
+            time = datetime.now().strftime("%m%d%H%M%S")
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            filenamefix = f"datauji-{time}.{extension}"
+            file.save("./static/assets/upload_data/" + filenamefix)
+
+        if "confirm_give" in request.form:
+            db.datacurahhujan.delete_many({})
+            db.dataminmax.delete_many({})
+
+        df = pd.read_excel(f'./static/assets/upload_data/{filenamefix}', sheet_name='Sheet2', decimal=',')
+        
+        listid = []
+        listx0 = []
+        listx1 = []
+        listx2 = []
+        listx3 = []
+        listy = []
+        list=[]
+        for i in df.index:
+            id = df['kode bln'][i]
+            x0 = float(df["x0"][i])
+            x1 = float(df["x1"][i])
+            x2 = float(df["x2"][i])
+            x3 = float(df["x3"][i])
+            y = float(df["y"][i])
+            listid.append(id)
+            listx0.append(x0)
+            listx1.append(x1)
+            listx2.append(x2)
+            listx3.append(x3)
+            listy.append(y)
+
+            doc = {
+                "idbln": id,
+                "x0": x0,
+                "x1": x1,
+                "x2": x2,
+                "x3": x3,
+                "y": y,
+            }
+            list.append(doc)
+
+        listminmax = {
+            "x0min": min(listx0),
+            "x0max": max(listx0),
+            "x1min": min(listx1),
+            "x1max": max(listx1),
+            "x2min": min(listx2),
+            "x2max": max(listx2),
+            "x3min": min(listx3),
+            "x3max": max(listx3),
+            "ymin": min(listy),
+            "ymax": max(listy),
+        }
+
+        db.datacurahhujan.insert_many(list)
+        db.dataminmax.insert_one(listminmax)
+
+    def predict():
+        # Pengambilan form data dari client
+        suhu_receive = float(request.form.get("suhu_give"))
+        kelembaban_receive = float(request.form.get("kelembaban_give"))
+        kecepatan_receive = float(request.form.get("kecepatan_give"))
+        tekanan_receive = float(request.form.get("tekanan_give"))
+
+        data_minmax = list(db.dataminmax.find({},{'_id':False}))
+
         input = np.array([suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]) 
+        network = predictJST.JSTimplementation()
         output = network.feedforward(input)
         curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
 
@@ -323,10 +329,9 @@ class predictFunction:
 
         return hasil
 
-    def predictWithModelAPI():
+    def predictAPI():
         cuacaTerkini = list(request.get_json())
 
-        # Pengambilan data minmax dari mongoDB
         data_minmax = list(db.dataminmax.find({},{'_id':False}))
 
         listInput = []
@@ -338,12 +343,9 @@ class predictFunction:
                 (float(cuaca['tekanan']) - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])]
             listInput.append(dataNormal)
 
-        input = np.array(listInput)
-
-        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
-
-        output = model.predict(input)
-
+        input = np.array(listInput) 
+        network = predictJST.JSTimplementation()
+        output = network.feedforward(input)
         curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
 
         dataWaktu = []
@@ -365,30 +367,72 @@ class predictFunction:
 
         return resultData
 
-    def predictWithModel():
-        # Pengambilan form data dari client
-        suhu_receive = float(request.form.get("suhu_give"))
-        kelembaban_receive = float(request.form.get("kelembaban_give"))
-        kecepatan_receive = float(request.form.get("kecepatan_give"))
-        tekanan_receive = float(request.form.get("tekanan_give"))
+    # def predictWithModelAPI():
+    #     cuacaTerkini = list(request.get_json())
 
-        # Pengambilan data minmax dari mongoDB
-        data_minmax = list(db.dataminmax.find({},{'_id':False}))
+    #     # Pengambilan data minmax dari mongoDB
+    #     data_minmax = list(db.dataminmax.find({},{'_id':False}))
 
-        input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
+    #     listInput = []
+    #     for cuaca in cuacaTerkini:
+    #         dataNormal = [
+    #             (float(cuaca['suhu']) - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min']),
+    #             (float(cuaca['kelembaban']) - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min']),
+    #             (float(cuaca['kecepatan']) - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min']),
+    #             (float(cuaca['tekanan']) - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])]
+    #         listInput.append(dataNormal)
 
-        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+    #     input = np.array(listInput)
 
-        output = model.predict(input)
+    #     model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
 
-        curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
-        hasil = {
-            "suhu": suhu_receive, 
-            "kelembaban": kelembaban_receive,  
-            "kecepatan": kecepatan_receive,
-            "tekanan": tekanan_receive,      
-            "hasil" : float(curahhujan)
-        }
+    #     output = model.predict(input)
 
-        return hasil
+    #     curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
+
+    #     dataWaktu = []
+    #     for cuaca in cuacaTerkini:
+    #         waktu = cuaca['waktu']
+    #         dataWaktu.append(waktu)
+        
+    #     resultData = []
+    #     for waktu, output in zip(dataWaktu, curahhujan):
+    #         hasil = float(output[0])
+    #         if output[0] < 0:
+    #             hasil = 0
+    #         resultData.append({
+    #             'waktu': waktu,
+    #             'hasil': hasil
+    #         })
+
+    #     print(resultData)
+
+    #     return resultData
+
+    # def predictWithModel():
+    #     # Pengambilan form data dari client
+    #     suhu_receive = float(request.form.get("suhu_give"))
+    #     kelembaban_receive = float(request.form.get("kelembaban_give"))
+    #     kecepatan_receive = float(request.form.get("kecepatan_give"))
+    #     tekanan_receive = float(request.form.get("tekanan_give"))
+
+    #     # Pengambilan data minmax dari mongoDB
+    #     data_minmax = list(db.dataminmax.find({},{'_id':False}))
+
+    #     input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
+
+    #     model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+
+    #     output = model.predict(input)
+
+    #     curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
+    #     hasil = {
+    #         "suhu": suhu_receive, 
+    #         "kelembaban": kelembaban_receive,  
+    #         "kecepatan": kecepatan_receive,
+    #         "tekanan": tekanan_receive,      
+    #         "hasil" : float(curahhujan)
+    #     }
+
+    #     return hasil
         

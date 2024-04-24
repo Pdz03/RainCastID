@@ -82,7 +82,7 @@ function predictManual (){
 
         $.ajax({
           type: "POST",
-          url: "/predictModel",
+          url: "/predict",
           data: {
             suhu_give: dataNormal.normalsuhu,
             kelembaban_give: dataNormal.normallembab,
