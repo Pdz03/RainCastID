@@ -21,11 +21,6 @@ def uploadData():
     predictFunction.upload_data()
     return jsonify({"result": "success"})
 
-@app.route('/predict', methods=["POST"])
-def Predict():
-    hasil = predictFunction.predict()
-    return jsonify({"result": "success", "data": hasil})
-
 @app.route('/predictModel', methods=["POST"])
 def PredictWithModel():
     hasil = predictFunction.predictWithModel()
@@ -34,4 +29,14 @@ def PredictWithModel():
 @app.route('/predictModelAPI', methods=["POST"])
 def PredictWithModelAPI():
     hasil = predictFunction.predictWithModelAPI()
+    return jsonify({"result": "success", "data": hasil})
+
+@app.route('/predict', methods=["POST"])
+def Predict():
+    hasil = predictFunction.predict()
+    return jsonify({"result": "success", "data": hasil})
+
+@app.route('/predictAPI', methods=["POST"])
+def PredictAPI():
+    hasil = predictFunction.predictAPI()
     return jsonify({"result": "success", "data": hasil})
