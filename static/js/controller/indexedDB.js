@@ -1,6 +1,7 @@
 const DB_NAME = 'RainCastDB';
 const DB_VERSION = 1; // Use a long long for this value (don't use a float)
 const DB_STORE_NAME = 'location';
+const DB_STORE_NAME2 = 'emailconfirm';
 
 // var db;
 
@@ -37,11 +38,15 @@ function openDb() {
       store.createIndex('long', 'long', { unique: false });
       store.createIndex('name', 'name', { unique: false });
       store.createIndex('country', 'country', { unique: false });
+
+      var emailconfirm = evt.currentTarget.result.createObjectStore(
+        DB_STORE_NAME2, { keyPath: 'email', autoIncrement: true });
+    
+      emailconfirm.createIndex('email', 'email', { unique: true });
+      emailconfirm.createIndex('otp', 'otp', { unique: false });
     };
   });
 }
-
-
 
 // function getObjectStore(store_name, mode) {
 //     var tx = db.transaction(store_name, mode);

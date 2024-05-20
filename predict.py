@@ -1,12 +1,12 @@
 from connect import db, dbuji
-from flask import jsonify, request, redirect, url_for
+from flask import request
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 import pandas as pd
 import numpy as np
-# import os
-# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-# import tensorflow as tf
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import tensorflow as tf
 
 class predictJST:
     def JSTimplementation():
@@ -63,7 +63,7 @@ class predictJST:
 
             def train(self, data, all_y_trues):
                 learn_rate = 0.5
-                epochs = 5000
+                epochs = 3000
 
                 for epoch in range(epochs):
                     for x, y_true in zip(data, all_y_trues):
@@ -348,6 +348,50 @@ class predictFunction:
         output = network.feedforward(input)
         curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
 
+        print(output)
+
+        # dataWaktu = []
+        # for cuaca in cuacaTerkini:
+        #     waktu = cuaca['waktu']
+        #     dataWaktu.append(waktu)
+        
+        # resultData = []
+        # for waktu, output in zip(dataWaktu, curahhujan):
+        #     hasil = float(output[0])
+        #     if output[0] < 0:
+        #         hasil = 0
+        #     resultData.append({
+        #         'waktu': waktu,
+        #         'hasil': hasil
+        #     })
+
+        # print(resultData)
+
+        return 68
+
+    def predictWithModelAPI():
+        cuacaTerkini = list(request.get_json())
+
+        # Pengambilan data minmax dari mongoDB
+        data_minmax = list(db.dataminmax.find({},{'_id':False}))
+
+        listInput = []
+        for cuaca in cuacaTerkini:
+            dataNormal = [
+                (float(cuaca['suhu']) - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min']),
+                (float(cuaca['kelembaban']) - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min']),
+                (float(cuaca['kecepatan']) - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min']),
+                (float(cuaca['tekanan']) - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])]
+            listInput.append(dataNormal)
+
+        input = np.array(listInput)
+
+        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+
+        output = model.predict(input)
+
+        curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
+
         dataWaktu = []
         for cuaca in cuacaTerkini:
             waktu = cuaca['waktu']
@@ -367,72 +411,30 @@ class predictFunction:
 
         return resultData
 
-    # def predictWithModelAPI():
-    #     cuacaTerkini = list(request.get_json())
+    def predictWithModel():
+        # Pengambilan form data dari client
+        suhu_receive = float(request.form.get("suhu_give"))
+        kelembaban_receive = float(request.form.get("kelembaban_give"))
+        kecepatan_receive = float(request.form.get("kecepatan_give"))
+        tekanan_receive = float(request.form.get("tekanan_give"))
 
-    #     # Pengambilan data minmax dari mongoDB
-    #     data_minmax = list(db.dataminmax.find({},{'_id':False}))
+        # Pengambilan data minmax dari mongoDB
+        data_minmax = list(db.dataminmax.find({},{'_id':False}))
 
-    #     listInput = []
-    #     for cuaca in cuacaTerkini:
-    #         dataNormal = [
-    #             (float(cuaca['suhu']) - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min']),
-    #             (float(cuaca['kelembaban']) - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min']),
-    #             (float(cuaca['kecepatan']) - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min']),
-    #             (float(cuaca['tekanan']) - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])]
-    #         listInput.append(dataNormal)
+        input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
 
-    #     input = np.array(listInput)
+        model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
 
-    #     model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
+        output = model.predict(input)
 
-    #     output = model.predict(input)
+        curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
+        hasil = {
+            "suhu": suhu_receive, 
+            "kelembaban": kelembaban_receive,  
+            "kecepatan": kecepatan_receive,
+            "tekanan": tekanan_receive,      
+            "hasil" : float(curahhujan)
+        }
 
-    #     curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
-
-    #     dataWaktu = []
-    #     for cuaca in cuacaTerkini:
-    #         waktu = cuaca['waktu']
-    #         dataWaktu.append(waktu)
-        
-    #     resultData = []
-    #     for waktu, output in zip(dataWaktu, curahhujan):
-    #         hasil = float(output[0])
-    #         if output[0] < 0:
-    #             hasil = 0
-    #         resultData.append({
-    #             'waktu': waktu,
-    #             'hasil': hasil
-    #         })
-
-    #     print(resultData)
-
-    #     return resultData
-
-    # def predictWithModel():
-    #     # Pengambilan form data dari client
-    #     suhu_receive = float(request.form.get("suhu_give"))
-    #     kelembaban_receive = float(request.form.get("kelembaban_give"))
-    #     kecepatan_receive = float(request.form.get("kecepatan_give"))
-    #     tekanan_receive = float(request.form.get("tekanan_give"))
-
-    #     # Pengambilan data minmax dari mongoDB
-    #     data_minmax = list(db.dataminmax.find({},{'_id':False}))
-
-    #     input = np.array([[suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]])
-
-    #     model = tf.keras.models.load_model('static/predict-model/PCH-model5.keras')
-
-    #     output = model.predict(input)
-
-    #     curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
-    #     hasil = {
-    #         "suhu": suhu_receive, 
-    #         "kelembaban": kelembaban_receive,  
-    #         "kecepatan": kecepatan_receive,
-    #         "tekanan": tekanan_receive,      
-    #         "hasil" : float(curahhujan)
-    #     }
-
-    #     return hasil
+        return hasil
         

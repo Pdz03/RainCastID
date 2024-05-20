@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Google Font link-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
+      rel="stylesheet"
+    />
+
+    <!-- ======= CSS Vendor ======= -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/css/glightbox.min.css"
+      integrity="sha512-T+KoG3fbDoSnlgEXFQqwcTC9AdkFIxhBlmoaFqYaIjq2ShhNwNao9AKaLUPMfwiBPL0ScxAtc+UYbHAgvd+sjQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link
+    href="{{ url_for('static', filename='style/style.css') }}"
+    rel="stylesheet"
+  />
+    <title>RainCast ID - {{user_info.username}}</title>
+    <script>
+      let username = "{{user_info.username}}";
+    </script>
+  </head>
+  <body>
+    <div id="loading">
+      <div id="loading-center">
+        <div id="loading-center-absolute">
+          <div class="object" id="object_one"></div>
+          <div class="object" id="object_two"></div>
+          <div class="object" id="object_three"></div>
+          <div class="object" id="object_four"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top no-background" id="navbar">
+        <div class="container px-4 d-flex align-items-start">
+          <a href="/" class="navbar-brand fw-semibold">
+            <img
+              src="{{ url_for('static', filename='assets/images/logo.png') }}"
+              class="logo logo-display"
+              height="45px"
+              alt=""
+            />
+            <img
+              src="{{ url_for('static', filename='assets/images/footer-logo.png') }}/"
+              class="logo logo-scrolled"
+              height="45px"
+              alt=""
+            />
+            <p class="text-white logo logo-display fs-6">
+              Satu Solusi untuk Indonesia Siaga Hujan
+            </p>
+            <p class="logo logo-scrolled fs-6">
+              Satu Solusi untuk Indonesia Siaga Hujan
+            </p>
+          </a>
+          <!-- <button
+              class="navbar-toggler"
+              data-bs-toggle="toggle"
+              data-bs-target="#mainTarget"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button> -->
+  
+          <div class="collapse navbar-collapse gap-3 navbar-menu" id="mainTarget">
+            <ul class="navbar-nav ms-auto" id="nav-pc">
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+      <div
+      class="modal fade"
+      id="modalResetPass"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modalResetPass"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="blockModalLabel">Reset Password</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <label for="old-password">Password Lama:</label>
+            <div class="input-group mb-3" id="fg-password2">
+              
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Masukkan Password Lama"
+                aria-label="password-old"
+                aria-describedby="button-addon2"
+                id="old-password"
+              />
+              <span
+                class="input-group-text"
+                id="basic-addon3"
+              >
+                <i
+                  class="bi bi-eye-slash"
+                  id="togglePasswordOld"
+                >
+                </i>
+              </span>
+            </div>
+            <label for="new-password">Password Baru:</label>
+            <div class="input-group mb-3" id="fg-password2">
+              
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Masukkan Password Baru"
+                aria-label="password-new"
+                aria-describedby="button-addon2"
+                id="new-password"
+              />
+              <span
+                class="input-group-text"
+                id="basic-addon3"
+              >
+                <i
+                  class="bi bi-eye-slash"
+                  id="togglePasswordNew"
+                >
+                </i>
+              </span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="resetPass('{{user_info.username}}', '{{user_info.password}}')">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalResetEmail" role="dialog" aria-hidden="true" aria-labelledby="modalResetEmail" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Reset Email</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" id="passfirst">
+              <label for="password">Masukkan password akun anda terlebih dahulu</label>
+              <div class="input-group mb-3" id="fg-password2">
+                
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Masukkan Password"
+                  aria-label="password"
+                  aria-describedby="button-addon2"
+                  id="password"
+                />
+                <span
+                  class="input-group-text"
+                  id="basic-addon3"
+                >
+                  <i
+                    class="bi bi-eye-slash"
+                    id="togglePassword"
+                  >
+                  </i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" onclick="check_pass('{{user_info.password}}')">Berikutnya</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalResetEmail2" aria-hidden="true" aria-labelledby="modalResetEmail2" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Reset Email</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" id="newEmail">
+              <label for="new-email">Masukkan Email Baru:</label>
+              <div class="input-group mb-3" id="fg-password2">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Masukkan Email Baru"
+                  aria-label="new-email"
+                  aria-describedby="button-addon2"
+                  id="new-email"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" onclick="resetEmail('{{user_info.username}}','{{user_info.email}}')">Perbarui dan Konfirmasi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalShareProfile" aria-hidden="true" aria-labelledby="modalShareProfile" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Bagikan Profil</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="d-flex flex-column align-items-center">
+              <div class="border border-2 border-black p-2 rounded" id="qr-profile">
+              </div>
+              <div class="input-group m-3 w-75">
+                <input type="text" id="urlLink" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  <button class="btn btn-orange" onclick="copyURL()"><i class="bi bi-copy"></i>&nbsp;Salin URL</button>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="shareExperienceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header text-white" style="background-color:#648CFF;">
+              <h5 class="modal-title" id="shareExperienceModalLabel">Update Profil Pengguna</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group mb-2">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{user_info.username}}" disabled>
+              </div>
+              <div class="form-group fg-fullname">
+                <label class="form-label" for="fullname">Nama Lengkap&nbsp;&nbsp;<span class="text-danger"><i class="bi bi-exclamation-square-fill text-danger"></i>&nbsp;Wajib diisi!</span></label>
+                <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Masukkan nama lengkap anda" value="{{user_info.fullname}}">
+              </div>
+              <h6
+               class="text-start mb-2"
+               id="help-fullname"
+              ></h6>
+              <div class="form-group fg-phone">
+              <label for="phone" class="form-label">No. Telepon / WhatsApp (ex: 6289xxxxxxx)</label>
+              <div class="input-group">
+                <input type="number" id="phone" name="phone" class="form-control" placeholder="Masukkan nomor telepon" value="{% if user_info.phone %}{{user_info.phone}}{% endif %}" required>
+                <span class="input-group-text" id="basic-addon2">
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="wa-enable"
+                      {% if user_info.wa_enable == true %}checked{% endif %}
+                      disabled
+                    />
+                    <label class="form-check-label" for="wa-enable" 
+                      >No. WhatsApp</label
+                    >
+                  </div>
+                </span>
+              </div>
+            </div>
+              <h6
+               class="text-start mb-2"
+               id="help-phone"
+              ></h6>
+              <div class="form-group fg-location">
+                <label class="form-label" for="location">Lokasi&nbsp;&nbsp;<span class="text-danger"><i class="bi bi-exclamation-square-fill text-danger"></i>&nbsp;Wajib diisi!</span></label>
+                <div class="input-group">
+                  <input type="text" id="location" name="address" class="form-control" placeholder="Lokasi anda" value="{% if user_info.profile_info.location_name %}{{user_info.profile_info.location_name}}{% endif %}" readonly>
+                  <input type="hidden" id="loc-id">
+                  <button
+                  class="btn btn-orange"
+                  type="button"
+                  onclick="check_loc()"
+                >
+                  Deteksi Lokasi
+                </button>
+                </div>
+              </div>
+              <h6
+               class="text-start mb-2"
+               id="help-location"
+              ></h6>
+              <div class="form-group fg-birth">
+                <label class="form-label" for="birth">Tanggal Lahir&nbsp;&nbsp;<span class="text-danger"><i class="bi bi-exclamation-square-fill text-danger"></i>&nbsp;Wajib diisi!</span></label>
+                <input type="date" id="birth" name="birth" class="form-control" value="{% if user_info.profile_info.birth %}{{user_info.profile_info.birth}}{% endif %}" required>
+              </div>
+              <h6
+               class="text-start mb-2"
+               id="help-birth"
+              ></h6>
+              <div class="form-group fg-bio">
+                <label class="form-label" for="bio">Bio Profil&nbsp;&nbsp;<span class="text-danger"><i class="bi bi-exclamation-square-fill text-danger"></i>&nbsp;Wajib diisi!</span></label>
+                <br>
+                <div
+                  class="form-control"
+                  id="bio"
+                  placeholder="Masukan deskripsi"
+                  required
+                >{% if user_info.profile_info.bio %}{{user_info.profile_info.bio | safe}}{% endif %}</div>
+              </div>
+              <h6
+               class="text-start mb-2"
+               id="help-bio"
+              ></h6>
+              <div class="form-group">
+                <label class="form-label" for="image-profile">Update Foto Profil</label>
+                <br><input type="file" class="form-control" id="image-profile" name="image">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" onclick="update_profile()" class="btn btn-primary">Update</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Batal</button>
+          </div>
+          </div>
+        </div>
+      </div>
+
+              <!--Login modal-->
+              <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+              </div>
+
+        <section id="home" class="home">
+            <div class="container main_home">
+              <div class="row mt-5">
+                <div class="col-lg-4">
+                  <div class="card mb-4">
+                    <div class="card-body text-center">
+                      <span class="text-danger" id="profile-warn"></span>
+                      <img src="/static/assets/{{user_info.profile_pic_real}}" alt="avatar"
+                        class="rounded-circle img-fluid" style="width: 150px;">
+                      <h5 class="mb-0">@{{user_info.username}}</h5>
+                      <small>{% if user_info.profile_info.location_name %}{{user_info.profile_info.location_name}}{% else %}-{% endif %}</small>
+                      <hr>
+                      <div class="col text-start">
+                      <p class="fs-5">{% if user_info.fullname %}{{user_info.fullname}}{% else %}-{% endif %}</p>
+                      <div class="text-muted">{{user_info.profile_info.bio | safe}}</div>
+                      </div>
+                      <hr>
+                      <div class="d-flex justify-content-center mb-2">
+                        {% if user_login %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal"><i class="bi bi-pencil-square"></i>&nbsp; Edit Profil</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-outline-primary ms-1" data-bs-toggle="modal" data-bs-target="#modalShareProfile"><i class="bi bi-share-fill"></i>&nbsp;Bagikan Profil</button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="col-lg-8">
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-8">
+                          <p class="text-muted mb-0">: {{user_info.email}}
+                            &nbsp;<a href="https://mail.google.com/mail/?view=cm&fs=1&to={{user_info.email}}" target="_blank" and rel="noopener noreferrer"><i class="bi bi-envelope text-danger"></i></a>
+                            {% if user_login %}
+                            &nbsp;&nbsp;<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetEmail">Update Email</button></p>
+                            {% endif %}
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <p class="mb-0">No. Telepon / WhatsApp</p>
+                        </div>
+                        <div class="col-sm-8">
+                          <p class="text-muted mb-0">: {% if user_info.phone %}{{user_info.phone}}{% else %}-{% endif %}
+                            &nbsp;{% if user_info.wa_enable == true %}<a href="https://wa.me/{{user_info.phone}}" target="_blank" and rel="noopener noreferrer"><i class="bi bi-whatsapp text-success"></i></a>{% endif %}
+                          </p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <p class="mb-0">Tanggal Lahir</p>
+                        </div>
+                        <div class="col-sm-8">
+                          <p class="text-muted mb-0">: {% if user_info.profile_info.birth %}{{user_info.profile_info.birth}}{% else %}-{% endif %}</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <p class="mb-0">Jumlah Postingan Forum</p>
+                        </div>
+                        <div class="col-sm-8">
+                          <p class="text-muted mb-0">: {% if user_info.fullname %}55{% else %}-{% endif %}</p>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+                  {% if user_login %}
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <p class="mb-0">Password</p>
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="col-sm-9">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetPass">Update Password</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+          </section>
+          <footer>
+            <div class="fixed text-center bg-primary text-white py-2">
+              <p class="fw-bold m-0">Copyright &copy; 2024 | RainCast Indonesia</p>
+            </div>
+          </footer>
+    
+      <script src="https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js"></script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+        integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/js/glightbox.min.js"
+        integrity="sha512-S/H9RQ6govCzeA7F9D0m8NGfsGf0/HjJEiLEfWGaMCjFzavo+DkRbYtZLSO+X6cZsIKQ6JvV/7Y9YMaYnSGnAA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
+      <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"
+        integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
+      <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs/dist/purecounter_vanilla.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+      <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.10.1/sha256.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.10.1/sha256.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+      <script src="/static/js/main.js"></script>
+      <script src="/static/js/controller/navbar.js"></script>
+      <script src="/static/js/controller/profile.js"></script>
+      <script src="/static/js/controller/API-cuaca.js"></script>
+      <script src="/static/js/controller/predict-manual.js"></script>
+      <script src="/static/js/controller/indexedDB.js"></script>
+      <script src="/static/js/controller/login-register.js"></script>
+      <script src="/static/js/templates/template-view.js"></script>
+
+      <script src="/static/js/helper/otp-helper.js"></script>
+      <script src="/static/js/helper/login-helper.js"></script>
+  </body>
+</html>

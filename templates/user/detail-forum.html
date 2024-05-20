@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Google Font link-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
+      rel="stylesheet"
+    />
+
+    <!-- ======= CSS Vendor ======= -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/css/glightbox.min.css"
+      integrity="sha512-T+KoG3fbDoSnlgEXFQqwcTC9AdkFIxhBlmoaFqYaIjq2ShhNwNao9AKaLUPMfwiBPL0ScxAtc+UYbHAgvd+sjQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link
+      href="{{ url_for('static', filename='style/style.css') }}"
+      rel="stylesheet"
+    />
+    <title>RainCast ID - Forum</title>
+    <script>
+      let postid = "{{post_info.postid}}";
+    </script>
+  </head>
+  <body>
+    <div id="loading">
+      <div id="loading-center">
+        <div id="loading-center-absolute">
+          <div class="object" id="object_one"></div>
+          <div class="object" id="object_two"></div>
+          <div class="object" id="object_three"></div>
+          <div class="object" id="object_four"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top no-background" id="navbar">
+      <div class="container px-4 d-flex align-items-start">
+        <a href="/" class="navbar-brand fw-semibold">
+          <img
+            src="{{ url_for('static', filename='assets/images/logo.png') }}"
+            class="logo logo-display"
+            height="45px"
+            alt=""
+          />
+          <img
+            src="{{ url_for('static', filename='assets/images/footer-logo.png') }}/"
+            class="logo logo-scrolled"
+            height="45px"
+            alt=""
+          />
+          <p class="text-white logo logo-display fs-6">
+            Satu Solusi untuk Indonesia Siaga Hujan
+          </p>
+          <p class="logo logo-scrolled fs-6">
+            Satu Solusi untuk Indonesia Siaga Hujan
+          </p>
+        </a>
+        <!-- <button
+              class="navbar-toggler"
+              data-bs-toggle="toggle"
+              data-bs-target="#mainTarget"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button> -->
+
+        <div class="collapse navbar-collapse gap-3 navbar-menu" id="mainTarget">
+          <ul class="navbar-nav ms-auto" id="nav-pc"></ul>
+        </div>
+      </div>
+    </nav>
+
+    <div
+      class="modal fade"
+      id="editForumModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editForumModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div
+            class="modal-header text-white"
+            style="background-color: #648cff"
+          >
+            <h5 class="modal-title" id="shareExperienceModalLabel">
+              Edit Postingan
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group mb-2">
+              <label for="image" class="form-label">Upload Gambar</label>
+              <br /><input
+                type="file"
+                class="form-control"
+                id="image"
+                name="image"
+              />
+            </div>
+            <div class="form-group mb-2 d-flex">
+              <label for="image" class="form-label mb-1 pe-2"
+                >Preview Gambar:</label
+              >
+              <img id="output" width="200" />
+            </div>
+            <div class="form-group mb-2">
+              <label for="deskripsi" class="form-label"
+                >Deskripsi Postingan</label
+              >
+              <br />
+              <div
+                class="form-control"
+                id="deskripsi"
+                placeholder="Masukan deskripsi"
+              >
+                {{post_info.deskripsi | safe}}
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="location" class="form-label">Lokasi</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  class="form-control"
+                  placeholder="Lokasi anda"
+                  value="{{post_info.lokasi}}"
+                  readonly
+                />
+                <button
+                  class="btn btn-orange"
+                  type="button"
+                  onclick="loc_current()"
+                >
+                  Deteksi Lokasi Sekitar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="postid" value="{{post_info.postid}}" />
+            <button type="button" onclick="update()" class="btn btn-primary">
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Login modal-->
+    <div
+      class="modal fade"
+      id="loginModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    ></div>
+
+    <section id="home" class="home">
+      <div class="container main_forum">
+        <div class="header-group text-center pb-5">
+          <h1 class="forum-title">RainCast Forum</h1>
+          <p class="forum-sub">
+            Saling berbagi informasi cuaca melalui RainCast Forum
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="forum-container">
+      <div class="container">
+        <div class="forum-content d-flex justify-content-center">
+          <div class="container">
+            <div class="row g-0">
+              <div class="col-sm-6 col-md-8">
+                <article
+                  class="blog-details bg-white p-2 border border-1 rounded"
+                >
+                  <div class="post-img detail-img mb-3">
+                    <img
+                      src="{{ url_for('static', filename='assets/'+post_info.image) }}"
+                      alt=""
+                      class="img-fluid rounded"
+                    />
+                  </div>
+                  <div class="meta-top">
+                    <div class="row px-3">
+                      <div class="col d-flex align-items-center">
+                        <img
+                          src="/static/assets/{{user.profile_pic_real}}"
+                          class="rounded-circle"
+                          alt="..."
+                          style="width: 32px"
+                        />
+                        &nbsp;<a
+                          href="/user/{{post_info.username}}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="fs-5 text-decoration-none text-black"
+                          >@{{post_info.username}}</a
+                        >
+                        <div class="mx-2">
+                          {% if user_info %}
+                          <button
+                            class="btn btn-md btn-orange mx-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editForumModal"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            class="btn btn-md btn-danger mx-1"
+                            onclick="delete_content('{{post_info.postid}}')"
+                          >
+                            Hapus
+                          </button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between px-3">
+                      <div class="time-loc d-flex">
+                        <div>
+                          <i class="bi bi-clock"></i>&nbsp;<span
+                            >{{datepost}}</span
+                          >
+                        </div>
+                        <div class="mx-2">
+                          <i class="bi bi-geo-alt"></i>&nbsp;<span
+                            >{{post_info.lokasi}}</span
+                          >
+                        </div>
+                      </div>
+                      <div class="like-comment d-flex">
+                        <div class="d-flex">
+                          <span class="like-num"
+                            >{{post_info.count_heart}}</span
+                          >
+                          &nbsp;&nbsp;
+                          <a
+                            aria-label="heart"
+                            onclick="toggle_like('{{post_info.postid}}', 'heart')"
+                            style="cursor: pointer"
+                          >
+                            <i
+                              class="bi fs-4 bi-heart-fill {% if post_info.heart_by_me %}text-danger{% endif %}"
+                            ></i>
+                          </a>
+                        </div>
+                        <div class="d-flex ms-2">
+                          <span class="comment-num"
+                            >{{post_info.count_comment}}</span
+                          >
+                          &nbsp;&nbsp;
+                          <a onclick="focus_comment()" style="cursor: pointer"
+                            ><i class="bi bi-chat-left-text-fill fs-4"></i
+                          ></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End meta top -->
+                  <div class="content px-3">{{post_info.deskripsi | safe}}</div>
+                  <!-- End post content -->
+                </article>
+              </div>
+              <div class="col-6 col-md-4">
+                <article
+                  class="blog-details ms-3 bg-white p-2 border border-1 border rounded"
+                >
+                  <h4 class="like-comment">Komentar terkait postingan</h4>
+                  {% if user_info %}
+                  <div class="card border-0">
+                    <div class="d-flex flex-start w-100">
+                      <img
+                        class="rounded-circle shadow-1-strong me-3"
+                        src="/static/assets/{{user_info.profile_pic_real}}"
+                        alt="avatar"
+                        width="40"
+                        height="40"
+                      />
+                      <div class="form-outline w-100">
+                        <textarea
+                          class="form-control"
+                          id="comment-input"
+                          rows="2"
+                          placeholder="Tulis komentar ..."
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="float-end mt-2 pt-1">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        onclick="add_comment('{{post_info.postid}}')"
+                      >
+                        Kirim
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary btn-sm"
+                        onclick="resetcomment()"
+                      >
+                        Batal
+                      </button>
+                    </div>
+                  </div>
+                  {% else %}
+                  <div class="card border-0">
+                    <h5 class="text-danger">
+                      Silakan Login Terlebih Dahulu Untuk Dapat Berkomentar
+                    </h5>
+                  </div>
+                  {% endif %}
+                  <hr />
+                  <p>{{post_info.count_comment}} Komentar</p>
+                  <div class="content-item" id="comments"></div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <hr />
+    <section id="contact">
+      <div class="title text-center fw-bold">Please, contact me here!</div>
+      <div class="contact-body row justify-content-center m-0 pt-3">
+        <div class="col-lg-6">
+          <div class="contact-head">
+            <div class="card-body">
+              <h3 class="card-title">You can send me email in here!</h3>
+              <hr />
+              <form id="mail-form">
+                <div class="mb-3">
+                  <label for="exampleFormControlInput1" class="form-label"
+                    >Email address</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="name@example.com"
+                    name="user_mail"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="exampleFormControlInput1" class="form-label"
+                    >Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Input your name ..."
+                    name="user_name"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="exampleFormControlTextarea1" class="form-label"
+                    >Message</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="exampleFormControlTextarea1"
+                    rows="4"
+                    placeholder="Input your message ..."
+                    name="message"
+                    required
+                  ></textarea>
+                </div>
+                <input type="submit" class="btn btn-light" value="Send Email" />
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="contact-head">
+            <div class="card-body">
+              <h3 class="card-title">
+                Follow my contact and social media below!
+              </h3>
+              <hr />
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-solid fa-square-envelope"></i>
+                  <a class="" onclick="mailfocus()" style="cursor: pointer">
+                    syaifudinfendip@gmail.com
+                  </a>
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-whatsapp"></i>
+                  <a
+                    href="https://wa.me/6289649474381"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    +62 896 4947 4381</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-linkedin"></i>
+                  <a
+                    href="https://www.linkedin.com/in/pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Prasetyo</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-facebook"></i>
+                  <a
+                    href="https://www.facebook.com/Pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Pendoelz</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-square-instagram"></i>
+                  <a
+                    href="https://www.instagram.com/fendypdz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >@fendypdz</a
+                  >
+                </p>
+              </div>
+              <div class="ls-contact">
+                <p>
+                  <i class="fa-brands fa-telegram"></i>
+                  <a
+                    href="https://t.me/pdz03/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Syaifudin Fendi Prasetyo</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="fixed text-center bg-primary text-white py-2">
+        <p class="fw-bold m-0">Copyright &copy; 2024 | RainCast Indonesia</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+      integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/js/glightbox.min.js"
+      integrity="sha512-S/H9RQ6govCzeA7F9D0m8NGfsGf0/HjJEiLEfWGaMCjFzavo+DkRbYtZLSO+X6cZsIKQ6JvV/7Y9YMaYnSGnAA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"
+      integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs/dist/purecounter_vanilla.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.10.1/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.10.1/sha256.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/controller/navbar.js"></script>
+    <script src="/static/js/controller/detail-forum.js"></script>
+    <script src="/static/js/controller/indexedDB.js"></script>
+    <script src="/static/js/controller/login-register.js"></script>
+    <script src="/static/js/templates/template-view.js"></script>
+
+    <script src="/static/js/helper/otp-helper.js"></script>
+    <script src="/static/js/helper/login-helper.js"></script>
+    <script src="/static/js/helper/like-helper.js"></script>
+  </body>
+</html>

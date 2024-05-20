@@ -14,7 +14,7 @@ function getClass(result) {
   switch (true) {
     case result == 0:
       classPredict = 'Tidak Hujan';
-      warning = 'Tidak ada peringatan karena kemungkinan tidak ada hujan.'
+      warning = 'Tidak ada perinsagatan karena kemungkinan tidak ada hujan.'
       break;
     case result >= 0.1 && result <= 20:
       classPredict = 'Hujan Sangat Ringan';
@@ -50,7 +50,7 @@ function getClass(result) {
 
 function predictManual (){
     $('#restitle').text('Hasil Prediksi Cuaca Berdasarkan Input Manual');
-    $('locAPI').empty();
+    $('#locAPI').empty();
     const contentContainer = document.querySelector('#prediksiAPI');
     let skeleton = skeletonPredictManual();
     contentContainer.innerHTML = skeleton;
@@ -82,7 +82,7 @@ function predictManual (){
 
         $.ajax({
           type: "POST",
-          url: "/predict",
+          url: "/predictModel",
           data: {
             suhu_give: dataNormal.normalsuhu,
             kelembaban_give: dataNormal.normallembab,

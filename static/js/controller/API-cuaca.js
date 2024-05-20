@@ -134,8 +134,19 @@ function predictAPILoc(status){
 }
 }
 
+async function predictDay(type){
+  let response = await axios.get('/auth_login');
+  let authLogin = await response.data;
+  if (authLogin){
+  console.log(authLogin);
+  let locId = authLogin.data.profile_info.location_id;
+  $('#cuacaModal').modal('show');
+  let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
+  showWeatherData(APILoc, type);
+  }
+}
+
 async function getWeatherData(lat, long, id, store){
-  const contentContainer = document.querySelector('#prediksiAPI');
   let APILoc ='';
   if (id !== ''){
     APILoc = await CuacaSource.cuacaLokasiTerkinibyID(id);
@@ -175,19 +186,113 @@ async function getWeatherData(lat, long, id, store){
       $('#locAPI').text(`Lokasi: ${APILoc.city.name}, ${APILoc.city.country} (Lokasi Tidak Tersimpan)`)
     }
   };
+  showWeatherData(APILoc, 'today');
+}
 
+function showWeatherData(APILoc, type){
+  console.log(type);
+  const contentContainer = document.querySelector('#prediksiAPI');
   let template = '';
   const listResult = APILoc.list;
   const today = new Date();
   const todayStr =
     today.getFullYear() +
     "-" +
-    (today.getMonth() + 1).toString().padStart(2, "0") +
+    (today.getMonth()+1).toString().padStart(2, "0") +
     "-" +
     today.getDate().toString().padStart(2, "0");
+
+  const day3Str =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    (today.getDate()+2).toString().padStart(2, "0");
+  console.log(todayStr)
   let dataAPI = [];
+  console.log(listResult);
   for (let i = 0; i < listResult.length; i++) {
-    if (listResult[i].dt_txt.split(" ")[0] === todayStr) {
+    let dttxt = listResult[i].dt_txt.split(" ")[0];
+    if(type==='today'){
+      if (dttxt === todayStr) {
+        const time = new Date(listResult[i].dt_txt);
+        const jam = time.getHours();
+        const menit = time.getMinutes();
+        const waktu = jam + ":" + menit.toString().padStart(2, "0");
+        const imgTime = getTimeImage(waktu);
+        dataAPI.push({
+          waktu: waktu,
+          suhu: (listResult[i].main.temp / 10).toFixed(2),
+          kelembaban: listResult[i].main.humidity,
+          kecepatan: listResult[i].wind.speed,
+          tekanan: listResult[i].main.pressure
+        })
+  
+        template += `
+        <div class="row g-0 p-2 align-items-center">
+          <div class="col-md-3 d-flex flex-wrap justify-content-center">
+            <h5 class="text-center">${waktu}</h5>
+            <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
+          </div>
+          <div class="col-md-9">
+            <div class="card-body">
+              <div class="container w-100">
+                <div class="row">
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
+                      <div class="col-10">                          
+                        <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
+                        <p class="card-text">${(listResult[i].main.temp / 10).toFixed(2)} °C</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
+                      <div class="col-10">                     
+                        <h6 class="card-title m-0">Kelembaban Udara</h6>
+                        <p class="card-text">${listResult[i].main.humidity} %</p>
+                      </div> 
+                    </div>   
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2">
+                        <i class="bi bi-wind fs-2"></i>
+                      </div>
+                      <div class="col-10">
+                        <h6 class="card-title m-0">Kecepatan Udara</h6>
+                        <p class="card-text">${listResult[i].wind.speed} m/s</p>
+                      </div> 
+                    </div>              
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2">
+                        <i class="bi bi-chevron-double-down fs-2"></i>
+                      </div>
+                      <div class="col-10">
+                        <h6 class="card-title m-0">Tekanan Udara</h6>
+                        <p class="card-text">${listResult[i].main.pressure} hPa</p>                           
+                      </div>  
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                <h6 class="card-title m-0 text-danger" id="curahhujan-${i}">SEDANG PROSES PERHITUNGAN PREDIKSI         <div class="spinner-border" role="status"></div></h6>
+                <p class="card-text text-danger" id="warning-${i}"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        `;
+        
+      }
+  }else if(type === '3day'){
+    if (dttxt >= todayStr && dttxt <= day3Str) {
       const time = new Date(listResult[i].dt_txt);
       const jam = time.getHours();
       const menit = time.getMinutes();
@@ -265,10 +370,11 @@ async function getWeatherData(lat, long, id, store){
       
     }
   }
+  }
   console.log(dataAPI);
       $.ajax({
         type: "POST",
-        url: "/predictAPI",
+        url: "/predictModelAPI",
         data: JSON.stringify(dataAPI),
         contentType: "application/json",
         success: function (response) {
@@ -289,212 +395,10 @@ async function getWeatherData(lat, long, id, store){
           //   normalcepat : (listResult[i].wind.speed - minmax.x2min) / (minmax.x2max - minmax.x2min),
           //   normaltekanan : (listResult[i].main.pressure - minmax.x3min) / (minmax.x3max - minmax.x3min),
           // }      
-          console.log('MASUUUUUKKK')   
         }
       })
   contentContainer.innerHTML = template;
 }
-
-function eventSaveLoc(){
-  let id = locationData.id;
-  let lat = locationData.lat;
-  let long = locationData.long;
-  let name = locationData.name;
-  let country = locationData.country;
-
-  saveLocation(id, lat, long, name, country)
-}
-
-function saveLocation(id, lat, long, name, country){
-    var obj = { id: id, lat: lat, long: long, name: name, country: country };
-
-    var store = getObjectStore(DB_STORE_NAME, 'readwrite');
-    var req;
-
-    req = store.openCursor();
-    req.onsuccess = function(evt) {
-      var cursor = evt.target.result;
-      if (cursor) {
-        req = store.get(cursor.key);
-        req.onsuccess = function (evt) {
-          var value = evt.target.result;
-          if (value.id !== obj.id){
-            Swal.fire({
-              title: "Apakah anda yakin?",
-              text: "Anda akan mengganti lokasi yang sebelumnya tersimpan",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Ganti lokasi"
-            }).then((result) => {
-              if (result.isConfirmed) {
-                deleteLocation();
-                try {
-                  var store = getObjectStore(DB_STORE_NAME, 'readwrite');
-                  req = store.add(obj);
-                } catch (e) {
-                  if (e.name == 'DataCloneError')
-                    displayActionFailure("This engine doesn't know how to clone a Data");
-                  throw e;
-                }
-                req.onsuccess = function (evt) {
-                  console.log("Lokasi Tersimpan");
-                  displayActionSuccess("Lokasi Tersimpan");
-                };
-                req.onerror = function() {
-                  console.error("Terdapat Error", this.error);
-                  displayActionFailure(this.error);
-                };
-                Swal.fire({
-                  title: "Tersimpan",
-                  text: "Lokasi baru telah tersimpan",
-                  icon: "success"
-                })
-              }
-            });
-          }else{
-            alert('LOKASI SAMA!')
-          }
-        }
-      } else {
-        Swal.fire({
-          title: "Apakah anda yakin?",
-          text: "Anda menyimpan lokasi ini",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Simpan"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            try {
-              var store = getObjectStore(DB_STORE_NAME, 'readwrite');
-              req = store.add(obj);
-            } catch (e) {
-              if (e.name == 'DataCloneError')
-                displayActionFailure("This engine doesn't know how to clone a Data");
-              throw e;
-            }
-            req.onsuccess = function (evt) {
-              console.log("Lokasi Tersimpan");
-              displayActionSuccess("Lokasi Tersimpan");
-            };
-            req.onerror = function() {
-              console.error("Terdapat Error", this.error);
-              displayActionFailure(this.error);
-            };
-            Swal.fire({
-              title: "Tersimpan",
-              text: "Lokasi baru telah tersimpan",
-              icon: "success"
-            })
-          }
-        });
-      }
-    };
-}
-
-window.onload = function() {  
-  (async () => {
-    try {
-      db = await openDb();
-      store = getSavedLoc();
-      // ... (use database and functions)
-    } catch (error) {
-      console.error("Error opening database:", error);
-    } finally {
-      var req;
-
-  req = store.openCursor();
-  req.onsuccess = function(evt) {
-    var cursor = evt.target.result;
-    const savedLoc = document.getElementById('saved-loc');
-    if (cursor) {
-      req = store.get(cursor.key);
-      req.onsuccess = function (evt) {
-        var value = evt.target.result;
-        savedLoc.innerHTML = `<p>Lokasi Tersimpan: <b>${value.name}, ${value.country}</b></p>
-        <button class="btn btn-danger" onclick="confirmDelete()">Hapus Lokasi</button>`;
-        $('#btnPredictAPI').removeClass('disabled');
-      }
-    } else {
-      console.log("No more entries");
-      savedLoc.innerHTML = `<p>Lokasi Tersimpan: <b>(Belum ada lokasi tersimpan)</b></p>`
-      $('#btnPredictAPI').addClass('disabled');
-    }
-  };
-  req.onerror = function() {
-    console.error("Terdapat Error", this.error);
-    window.location.reload();
-  };
-      // Optional: Handle cleanup tasks here
-    }
-  })();
-  // store = getSavedLoc();
-};
-
-function confirmDelete(){
-  Swal.fire({
-    title: "Apakah anda yakin?",
-    text: "Anda akan menghapus lokasi yang sudah tersimpan",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Hapus"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      deleteLocation();
-      Swal.fire({
-        title: "Terhapus",
-        text: "Lokasi berhasil terhapus",
-        icon: "success"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-          }
-        });
-    }
-  });
-}
-
-function deleteLocation(store) {
-  console.log("deleteLocation:", arguments);
-
-  if (typeof store == 'undefined')
-    store = getObjectStore(DB_STORE_NAME, 'readwrite');
-
-  var req = store.openCursor();
-  req.onsuccess = function(evt) {
-    var record = evt.target.result;
-
-    var deleteReq = store.delete(record.key);
-    deleteReq.onsuccess = function(evt) {
-      console.log("evt.target.result:", evt.target.result);
-      console.log("Lokasi Terhapus");
-      displayActionSuccess("Lokasi Terhapus");
-    };
-    deleteReq.onerror = function (evt) {
-      console.error("Terdapat Error:", evt.target.errorCode);
-    };
-  };
-  req.onerror = function (evt) {
-    console.error("Terdapat Error:", evt.target.errorCode);
-  };
-}
-
-function displayActionSuccess(msg) {
-  msg = typeof msg != 'undefined' ? "Success: " + msg : "Success";
-  $('#msg').html('<span class="action-success">' + msg + '</span>');
-}
-function displayActionFailure(msg) {
-  msg = typeof msg != 'undefined' ? "Failure: " + msg : "Failure";
-  $('#msg').html('<span class="action-failure">' + msg + '</span>');
-}
-
-
-
 
 // Mulai prediksi
 

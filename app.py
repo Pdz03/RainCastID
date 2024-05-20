@@ -119,13 +119,20 @@ def register():
 
     data_user = {
         "username": username_receive,
+        "fullname": "",
         "email": email_receive,
         "password": password_receive,
-        "profile_name": username_receive,
         "profile_pic": "",
         "profile_pic_real": "profile_pics/profile_icon.png",
-        "profile_info": "",
-        "blocked": False,
+        "profile_info": {
+            "location": "",
+            "birth": "",
+            "bio": ""
+        },
+        "emailconfirm": False,
+        "botactivated": False,
+        "teleid": "",
+        "teleuser": "",
         "level": 2
     }
 

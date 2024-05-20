@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //for Preloader
 
-window.addEventListener('load', () => {
+// window.addEventListener('load', () => {
 
-        $("#loading").fadeOut(500);
-});
+//         $("#loading").fadeOut(500);
+// });
 
 });
 
