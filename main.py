@@ -12,9 +12,9 @@ TOKEN_KEY = "mytoken"
 def home():
     return render_template('index.html')
 
-@app.route('/admin')
+@app.route('/admin-dashboard')
 def adminpage():
-    return render_template('admin.html')
+    return render_template('admin/dashboard.html')
 
 @app.route('/dashboard')
 def dashboarduser():
