@@ -30,12 +30,14 @@ function getnavbar(){
         let temp_navbar = ''
         if (response.result == ['success']){
             let warning = ''
+            if (response.data['level'==2]){
             if (response.data['fullname']=='' ||
             response.data['profile_info']['location']=='' || 
             response.data['profile_info']['bio']=='' ||
             response.data['profile_info']['birth']==''){
               warning = '<i class="bi bi-exclamation-square-fill text-danger"></i>'
             }
+          }
             temp_navbar = `
             <li class="nav-item">
             <a href="/dashboard" class="nav-link nav-top fw-bold text-white fs-5"

@@ -167,6 +167,11 @@ fieldset {
     fill: #D9EEEF;
 }
 
+.logoheader{
+    height: 150px;
+    background-color: #648CFF;
+}
+
 .main_home{
     overflow: hidden;
     padding-top: 100px;

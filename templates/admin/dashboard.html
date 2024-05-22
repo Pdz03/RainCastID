@@ -156,303 +156,205 @@
       </ul>
     </nav>
 
-    <!--Cuaca modal-->
-    <div
-      class="modal fade"
-      id="cuacaModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-      aria-labelledby="loginModalLabel"
-      aria-hidden="true"
-    ></div>
-
-    <section id="home" class="home">
+    <section id="home" class="admin">
+      <div class="logoheader"></div>
       <div class="container main_home">
-        <div class="row d-flex align-items-end">
-          <div class="col-md-6">
-            <div class="home_text px-2">
-              <h2 class="text-white fw-bold">
-                Selamat Datang di RainCast ID, <span class="username"></span>!
-              </h2>
-            </div>
-            <hr class="text-white w-75" />
-            <h3 class="text-white">Fitur Khusus Member:</h3>
-            <div class="bg-white p-2 rounded">
-              <h5 class="fw-semibold">
-                Prediksi Curah Hujan Berdasarkan Lokasi
-              </h5>
-              <p class="m-0">
-                Lokasi Tersimpan:
-                <span id="savedLocMember" class="fw-bold"></span>
-              </p>
-              <div id="helpLoc" class="text-danger mb-2"></div>
-              <button
-                class="btn btn-orange"
-                id="btn-predictToday"
-                onclick="predictDay('today')"
-              >
-                Prediksi Hari Ini
-              </button>
-              <button
-                class="btn btn-orange"
-                id="btn-predict3Day"
-                onclick="predictDay('3day')"
-              >
-                Prediksi 3 Hari
-              </button>
-              <hr />
-              <h5 class="fw-semibold">Notifikasi Prediksi Harian</h5>
-              <div class="form-check form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="notif-browser"
-                />
-                <label class="form-check-label" for="notif-browser"
-                  >Notifikasi Browser </label
-                >&nbsp;&nbsp;<a><i class="bi bi-info-circle"></i></a>
-              </div>
-              <div class="form-check form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="notif-tele"
-                />
-                <label class="form-check-label" for="notif-tele"
-                  >Notifikasi BOT Telegram</label
-                >&nbsp;&nbsp;<a><i class="bi bi-info-circle"></i></a>
-              </div>
-              <hr />
-              <h5 class="fw-semibold">Log Prediksi Curah Hujan</h5>
-              <button class="btn btn-orange">Lihat Log Prediksi</button>
-            </div>
+        <h1>Pengujian Backpropagation</h1>
+        <hr />
+        <div class="field">
+          <div class="mb-3">
+            <input class="form-control" type="file" id="input-file" />
           </div>
-          <div class="col-md-6 border-start border-2">
-            <h3 class="text-white">Prediksi Curah Hujan (Input Manual)</h3>
-            <fieldset class="rounded py-3 border-0">
-              <div class="form-group" id="inputManual">
-                <label for="temperature" class="form-label fw-bold"
-                  >Temperatur Udara</label
-                >
-                <div class="input-group mb-3">
-                  <input
-                    id="tempInput"
-                    type="number"
-                    class="form-control"
-                    placeholder="Masukkan temperatur udara ..."
-                    aria-describedby="temperature"
-                  />
-                  <span class="input-group-text satuan" id="temperature"
-                    >°C</span
-                  >
-                </div>
-                <label for="kelembaban" class="form-label fw-bold"
-                  >Kelembaban Udara</label
-                >
-                <div class="input-group mb-3">
-                  <input
-                    id="lembabInput"
-                    type="number"
-                    class="form-control"
-                    placeholder="Masukkan intensitas kelembaban udara ..."
-                    aria-describedby="kelembaban"
-                  />
-                  <span class="input-group-text satuan" id="kelembaban">%</span>
-                </div>
-                <label for="kecepatan" class="form-label fw-bold"
-                  >Kecepatan Angin</label
-                >
-                <div class="input-group mb-3">
-                  <input
-                    id="cepatInput"
-                    type="number"
-                    class="form-control"
-                    placeholder="Masukkan kecepatan angin ..."
-                    aria-describedby="kecepatan"
-                  />
-                  <span class="input-group-text satuan" id="kecepatan"
-                    >m/s</span
-                  >
-                </div>
-                <label for="temperature" class="form-label fw-bold"
-                  >Tekanan Udara</label
-                >
-                <div class="input-group mb-3">
-                  <input
-                    id="tekananInput"
-                    type="number"
-                    class="form-control"
-                    placeholder="Masukkan tekanan udara ..."
-                    aria-describedby="tekanan"
-                  />
-                  <span class="input-group-text satuan" id="tekanan">hPa</span>
-                </div>
-                <div class="input-group justify-content-center">
+        </div>
+        <a class="btn btn-dark" onclick="upload_add_data()"
+          >Upload and Add Data</a
+        >
+        <a class="btn btn-dark" onclick="upload_input_data()"
+          >Upload Input Data</a
+        >
+        <a class="btn btn-dark" onclick="delall()">Delete All</a>
+        <a class="btn btn-dark" onclick="upload_update_data()"
+          >Upload and Update Data</a
+        >
+        <div id="output"></div>
+        <hr />
+        <div class="field">
+          <div class="mb-3">
+            <h4>Epoch</h4>
+            <input class="form-control" type="number" id="input-epoch" />
+          </div>
+        </div>
+        <div id="step1">
+          <div
+            class="modal fade"
+            id="resultHiddenPR"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="titlePredictHidden"></h1>
                   <button
-                    id="btnPredictManual"
-                    data-bs-toggle="modal"
-                    data-bs-target="#cuacaModal"
-                    class="btn btn-orange px-5 disabled"
-                    onclick="predictManual()"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    id="destroy"
+                  ></button>
+                </div>
+                <div class="modal-body container">
+                  <div class="row justify-content-center">
+                    <div class="col">
+                      <table width="100%" border="1">
+                        <thead>
+                          <tr>
+                            <th>Prediksi</th>
+                            <th>Aktual</th>
+                          </tr>
+                        </thead>
+                        <tbody id="datahasil">
+                          <tr>
+                            <td colspan="2">Tidak ada data</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col">
+                      <h5>Grafik Perbandingan</h5>
+                      <canvas id="rainChart"></canvas>
+                      <h5>Akurasi Prediksi</h5>
+                      <p id="akurasi"></p>
+                    </div>
+                  </div>
+
+                  <hr />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    id="destroy"
                   >
-                    Mulai Prediksi
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-primary">
+                    Save changes
                   </button>
                 </div>
               </div>
-            </fieldset>
+            </div>
           </div>
+          <h4>
+            Tahap pertama, hitung pengaruh jumlah hidden neuron dan epoch
+            menggunakan data 2 bulan
+          </h4>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="ujipredict(1)"
+            data-bs-toggle="modal"
+            data-bs-target="#resultHiddenPR"
+          >
+            Hidden 1
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="ujipredict(2)"
+            data-bs-toggle="modal"
+            data-bs-target="#resultHiddenPR"
+          >
+            Hidden 2
+          </button>
         </div>
-        <!--End off row-->
-      </div>
-      <!--End off container -->
-      <div class="custom-shape-divider-bottom-1709026157">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
-            class="shape-fill"
-          ></path>
-        </svg>
+        <hr />
+        <div id="step2">
+          <h4>
+            Tahap kedua, hitung pengaruh jumlah data uji menggunakan hasil
+            terbaik dari tahap pertama
+          </h4>
+          <button class="btn btn-secondary">Data 2 tahun</button>
+          <button class="btn btn-secondary">Data 3 tahun</button>
+          <button class="btn btn-secondary">Data 4 tahun</button>
+        </div>
+        <hr />
+        <div id="step3">
+          <h4>
+            Tahap ketiga, perbandingan hasil prediksi dari tahap kedua dengan
+            hasil data BMKG
+          </h4>
+        </div>
+        <p id="coba">aa</p>
+        <div>
+          <h1 class="title">Data Uji</h1>
+          <table class="table table-striped w-75">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Temperatur</th>
+                <th>Kelembaban Udara</th>
+                <th>Kecepatan Udara</th>
+                <th>Tekanan Udara</th>
+                <th>Curah Hujan</th>
+              </tr>
+            </thead>
+            <tbody id="dataminmax">
+              <tr>
+                <th>Data Min</th>
+              </tr>
+              <tr>
+                <th>Data Max</th>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped w-75">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Temperatur</th>
+                <th>Kelembaban Udara</th>
+                <th>Kecepatan Udara</th>
+                <th>Tekanan Udara</th>
+                <th>Curah Hujan</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="datauji">
+              <tr>
+                <td colspan="7">Tidak ada data uji</td>
+              </tr>
+            </tbody>
+          </table>
+          <h1 class="title">Data Normalisasi</h1>
+          <table class="table table-striped w-75">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Temperatur</th>
+                <th>Kelembaban Udara</th>
+                <th>Kecepatan Udara</th>
+                <th>Tekanan Udara</th>
+                <th>Curah Hujan</th>
+              </tr>
+            </thead>
+            <tbody id="datanormal">
+              <tr>
+                <td colspan="6">Tidak ada data uji</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
     <!--End off Home Sections-->
 
-    <section id="contact">
-      <div class="title text-center fw-bold">Please, contact me here!</div>
-      <div class="contact-body row justify-content-center m-0 pt-3">
-        <div class="col-lg-6">
-          <div class="contact-head">
-            <div class="card-body">
-              <h3 class="card-title">You can send me email in here!</h3>
-              <hr />
-              <form id="mail-form">
-                <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label"
-                    >Email address</label
-                  >
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    placeholder="name@example.com"
-                    name="user_mail"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label"
-                    >Name</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    placeholder="Input your name ..."
-                    name="user_name"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="exampleFormControlTextarea1" class="form-label"
-                    >Message</label
-                  >
-                  <textarea
-                    class="form-control"
-                    id="exampleFormControlTextarea1"
-                    rows="4"
-                    placeholder="Input your message ..."
-                    name="message"
-                    required
-                  ></textarea>
-                </div>
-                <input type="submit" class="btn btn-light" value="Send Email" />
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="contact-head">
-            <div class="card-body">
-              <h3 class="card-title">
-                Follow my contact and social media below!
-              </h3>
-              <hr />
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-solid fa-square-envelope"></i>
-                  <a class="" onclick="mailfocus()" style="cursor: pointer">
-                    syaifudinfendip@gmail.com
-                  </a>
-                </p>
-              </div>
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-brands fa-square-whatsapp"></i>
-                  <a
-                    href="https://wa.me/6289649474381"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    +62 896 4947 4381</a
-                  >
-                </p>
-              </div>
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-brands fa-linkedin"></i>
-                  <a
-                    href="https://www.linkedin.com/in/pdz03/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Syaifudin Fendi Prasetyo</a
-                  >
-                </p>
-              </div>
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-brands fa-square-facebook"></i>
-                  <a
-                    href="https://www.facebook.com/Pdz03/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Syaifudin Fendi Pendoelz</a
-                  >
-                </p>
-              </div>
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-brands fa-square-instagram"></i>
-                  <a
-                    href="https://www.instagram.com/fendypdz/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >@fendypdz</a
-                  >
-                </p>
-              </div>
-              <div class="ls-contact">
-                <p>
-                  <i class="fa-brands fa-telegram"></i>
-                  <a
-                    href="https://t.me/pdz03/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Syaifudin Fendi Prasetyo</a
-                  >
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
     <footer>
       <div class="fixed text-center bg-primary text-white py-2">
         <p class="fw-bold m-0">Copyright &copy; 2024 | RainCast Indonesia</p>
@@ -497,7 +399,7 @@
 
     <script src="/static/js/main.js"></script>
     <script src="/static/js/controller/navbar.js"></script>
-    <script src="/static/js/controller/dashboard.js"></script>
+    <script src="/static/js/controller/admin.js"></script>
     <script src="/static/js/controller/API-cuaca.js"></script>
     <script src="/static/js/controller/predict-manual.js"></script>
     <script src="/static/js/controller/indexedDB.js"></script>
