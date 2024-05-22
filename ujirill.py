@@ -237,8 +237,8 @@ class predictJST:
 # Pengambilan form data dari client
 suhu_receive = 27
 kelembaban_receive = 78
-kecepatan_receive = 6
-tekanan_receive = 1011
+kecepatan_receive = 4
+tekanan_receive = 1012
 
 # Normalisasi data
 data_minmax = list(dbuji.datarillminmax.find({},{'_id':False}))
