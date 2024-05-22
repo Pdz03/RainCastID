@@ -16,63 +16,63 @@ class predictJST:
         
         class OurNeuralNetwork:
             def __init__(self):
-                # # Bobot
-                # self.w1 = 0.819570608847876
-                # self.w2 = 0.614190682394799
-                # self.w3 = 0.534060639648483
-                # self.w4 = 0.630863102065606
-                # self.w5 = 0.173971978246061
-                # self.w6 = 0.714634984454336
-                # self.w7 = 0.11187537478084
-                # self.w8 = 0.127297668403292
-                # self.w9 = 0.159948687839791
-                # self.w10 = 0.946853660295208
-                # self.w11 = 0.735012316410321
-                # self.w12 = 0.101565793591409
-                # self.w13 = 0.689516685627664
-                # self.w14 = 0.0471933340883443
-                # self.w15 = 0.754969648964325
-                # self.w16 = 0.769830743194806
-                # self.w17 = 0.401537642265559
-                # self.w18 = 0.0395968758634402
-                # self.w19 = 0.998758109055091
-                # self.w20 = 0.23025157128224
-
-                # # Bias
-                # self.b1 = 0.138580691573428
-                # self.b2 = 0.875839481586548
-                # self.b3 = 0.875839481586548
-                # self.b4 = 0.267297776365251
-                # self.b5 = 0.623769025774626
-
                 # Bobot
-                self.w1 = np.random.normal()
-                self.w2 = np.random.normal()
-                self.w3 = np.random.normal()
-                self.w4 = np.random.normal()
-                self.w5 = np.random.normal()
-                self.w6 = np.random.normal()
-                self.w7 = np.random.normal()
-                self.w8 = np.random.normal()
-                self.w9 = np.random.normal()
-                self.w10 = np.random.normal()
-                self.w11 = np.random.normal()
-                self.w12 = np.random.normal()
-                self.w13 = np.random.normal()
-                self.w14 = np.random.normal()
-                self.w15 = np.random.normal()
-                self.w16 = np.random.normal()
-                self.w17 = np.random.normal()
-                self.w18 = np.random.normal()
-                self.w19 = np.random.normal()
-                self.w20 = np.random.normal()
+                self.w1 = 0.819570608847876
+                self.w2 = 0.614190682394799
+                self.w3 = 0.534060639648483
+                self.w4 = 0.630863102065606
+                self.w5 = 0.173971978246061
+                self.w6 = 0.714634984454336
+                self.w7 = 0.11187537478084
+                self.w8 = 0.127297668403292
+                self.w9 = 0.159948687839791
+                self.w10 = 0.946853660295208
+                self.w11 = 0.735012316410321
+                self.w12 = 0.101565793591409
+                self.w13 = 0.689516685627664
+                self.w14 = 0.0471933340883443
+                self.w15 = 0.754969648964325
+                self.w16 = 0.769830743194806
+                self.w17 = 0.401537642265559
+                self.w18 = 0.0395968758634402
+                self.w19 = 0.998758109055091
+                self.w20 = 0.23025157128224
 
                 # Bias
-                self.b1 = np.random.normal()
-                self.b2 = np.random.normal()
-                self.b3 = np.random.normal()
-                self.b4 = np.random.normal()
-                self.b5 = np.random.normal()
+                self.b1 = 0.138580691573428
+                self.b2 = 0.875839481586548
+                self.b3 = 0.875839481586548
+                self.b4 = 0.267297776365251
+                self.b5 = 0.623769025774626
+
+                # # Bobot
+                # self.w1 = np.random.normal()
+                # self.w2 = np.random.normal()
+                # self.w3 = np.random.normal()
+                # self.w4 = np.random.normal()
+                # self.w5 = np.random.normal()
+                # self.w6 = np.random.normal()
+                # self.w7 = np.random.normal()
+                # self.w8 = np.random.normal()
+                # self.w9 = np.random.normal()
+                # self.w10 = np.random.normal()
+                # self.w11 = np.random.normal()
+                # self.w12 = np.random.normal()
+                # self.w13 = np.random.normal()
+                # self.w14 = np.random.normal()
+                # self.w15 = np.random.normal()
+                # self.w16 = np.random.normal()
+                # self.w17 = np.random.normal()
+                # self.w18 = np.random.normal()
+                # self.w19 = np.random.normal()
+                # self.w20 = np.random.normal()
+
+                # # Bias
+                # self.b1 = np.random.normal()
+                # self.b2 = np.random.normal()
+                # self.b3 = np.random.normal()
+                # self.b4 = np.random.normal()
+                # self.b5 = np.random.normal()
 
             def feedforward(self, x):
                 # Perhitungan pada lapisan input dan hidden lapisan pertama
@@ -193,14 +193,37 @@ class predictJST:
                     print (f"Epoch {epoch} loss: {loss}")
         
         # Pengambilan data dari mongoDB
-        data_uji = list(dbuji.databiner.find({},{'_id':False}))
+        data_uji = list(dbuji.datarill.find({},{'_id':False}))
+        data_minmax = list(dbuji.datarillminmax.find({},{'_id':False}))
+
+        # Normalisasi data
+        listnormaldata = []
+        for i in range(len(data_uji)):
+            x0normal = (data_uji[i]['x0'] - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min'])
+
+            x1normal = (data_uji[i]['x1'] - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min'])
+
+            x2normal = (data_uji[i]['x2'] - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min'])
+
+            x3normal = (data_uji[i]['x3'] - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])
+        
+            ynormal = (data_uji[i]['y'] - data_minmax[0]['ymin'])/(data_minmax[0]['ymax'] - data_minmax[0]['ymin'])
+
+            datanormalisasi = {
+                "x0": x0normal,
+                "x1": x1normal,
+                "x2": x2normal,
+                "x3": x3normal,
+                "y": ynormal
+            }
+            listnormaldata.append(datanormalisasi)
     
         # Klasifikasi data berdasarkan input dan output
         sampel_output=[]
         sampel_input=[]
-        for data in data_uji:
-            sampel_input.append([data['x0'], data['x1'], data['x2'], data['x3']])
-            sampel_output.append(data['y'])
+        for datanormal in listnormaldata:
+            sampel_input.append([datanormal['x0'], datanormal['x1'], datanormal['x2'], datanormal['x3']])
+            sampel_output.append(datanormal['y'])
         # Pengambilan data set dan data output historis berdasarkan data yang dinormalisasi
         dataset = np.array(sampel_input)
         all_y_trues = np.array(sampel_output)
@@ -212,13 +235,23 @@ class predictJST:
 
 
 # Pengambilan form data dari client
-suhu_receive = 1
-kelembaban_receive = 1
-kecepatan_receive = 1
-tekanan_receive = 1
+suhu_receive = 27
+kelembaban_receive = 78
+kecepatan_receive = 6
+tekanan_receive = 1011
 
-input = np.array([suhu_receive, kelembaban_receive, kecepatan_receive, tekanan_receive]) 
+# Normalisasi data
+data_minmax = list(dbuji.datarillminmax.find({},{'_id':False}))
+listnormaldata = []
+x0normal = (suhu_receive - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min'])
+x1normal = (kelembaban_receive - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min'])
+x2normal = (kecepatan_receive - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min'])
+x3normal = (tekanan_receive - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])        
+
+input = np.array([x0normal, x1normal, x2normal, x3normal]) 
 network = predictJST.JSTimplementation()
 output = network.feedforward(input)
+curahhujan = (data_minmax[0]['ymax'] - data_minmax[0]['ymin']) * output + data_minmax[0]['ymin']
 
 print(output)
+print(curahhujan)
