@@ -148,13 +148,14 @@ function predict() {
   function ambildata() {
     $.ajax({
       type: "GET",
-      url: "/getdata",
+      url: "/ambildata",
       data: {},
       success: function (response) {
-        let output = response.data.listdata;
-        let minmax = response.data.minmax[0];
-        let normaldata = response.data.listnormaldata;
-        console.log(output.length);
+        console.log(response.minmax)
+        let output = response.data;
+        let minmax = response.dataminmax[0];
+        let normaldata = response.normaldata;
+        console.log(output);
         if (output.length > 0) {
           $("#datauji").empty();
           $("#dataminmax").empty();
@@ -320,6 +321,24 @@ function predict() {
       success: function (response) {
         alert("Sukses");
         window.location.reload();
+      },
+    });
+  }
+
+function init_predict(){
+    let epoch = $('#epoch').val();
+    console.log(epoch)
+    $.ajax({
+      type: "POST",
+      url: "/initpredict",
+      data: {
+        epoch: epoch,
+      },
+      success: function (response) {
+        if (response["result"]==='success'){
+          alert("Sukses");
+          window.location.reload();
+        }
       },
     });
   }

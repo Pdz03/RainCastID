@@ -86,7 +86,7 @@ class predictJST:
 
             def train(self, data, all_y_trues):
                 learn_rate = 0.5
-                epochs = 5
+                epochs = 10
 
                 for epoch in range(epochs):
                     for x, y_true in zip(data, all_y_trues):

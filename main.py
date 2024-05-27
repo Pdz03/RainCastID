@@ -1,9 +1,10 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-from predict import predictFunction
+from predict import predictFunction, predictJST
 from datetime import datetime, timedelta
 import jwt
 from connect import db
 from werkzeug.utils import secure_filename
+import pandas as pd
 app = Flask(__name__)
 
 SECRET_KEY = "RAINCASTID"
@@ -116,17 +117,6 @@ def reset_email():
         return jsonify({"result": "success", "msg": "Profile updated!"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
-
-@app.route('/getdata')
-def getData():
-    datalist = predictFunction.ambildata()
-
-    return jsonify({"result": "success", "data":datalist})
-
-@app.route('/upload_data', methods=["POST"])
-def uploadData():
-    predictFunction.upload_data()
-    return jsonify({"result": "success"})
 
 @app.route('/predictModel', methods=["POST"])
 def PredictWithModel():
@@ -548,3 +538,109 @@ def service_worker():
     print(response)
     return response
     
+
+# =========== ADMIN ==============
+@app.route('/upload_data', methods=["POST"])
+def upload_data():
+    if "file_give" in request.files:
+        time = datetime.now().strftime("%m%d%H%M%S")
+        file = request.files["file_give"]
+        filename = secure_filename(file.filename)
+        extension = filename.split(".")[-1]
+        filenamefix = f"datauji-{time}.{extension}"
+        file.save("./static/assets/upload_data/" + filenamefix)
+
+        if "confirm_give" in request.form:
+            db.datacurahhujan.delete_many({})
+            db.dataminmax.delete_many({})
+
+        df = pd.read_excel(f'./static/assets/upload_data/{filenamefix}', sheet_name='Sheet1', decimal=',')
+        
+        listx0 = []
+        listx1 = []
+        listx2 = []
+        listx3 = []
+        listy = []
+        list=[]
+        for i in df.index:
+            x0 = float(df["x0"][i])
+            x1 = float(df["x1"][i])
+            x2 = float(df["x2"][i])
+            x3 = float(df["x3"][i])
+            y = float(df["y"][i])
+            listx0.append(x0)
+            listx1.append(x1)
+            listx2.append(x2)
+            listx3.append(x3)
+            listy.append(y)
+
+            doc = {
+                "x0": x0,
+                "x1": x1,
+                "x2": x2,
+                "x3": x3,
+                "y": y,
+            }
+            list.append(doc)
+
+        listminmax = {
+            "x0min": min(listx0),
+            "x0max": max(listx0),
+            "x1min": min(listx1),
+            "x1max": max(listx1),
+            "x2min": min(listx2),
+            "x2max": max(listx2),
+            "x3min": min(listx3),
+            "x3max": max(listx3),
+            "ymin": min(listy),
+            "ymax": max(listy),
+        }
+
+        db.datacurahhujan.insert_many(list)
+        db.dataminmax.insert_one(listminmax)
+    return jsonify({"result": "success", "msg": "File uploaded!"})
+
+@app.route('/ambildata')
+def ambildata():
+    data_uji = list(db.datacurahhujan.find({},{'_id':False}))
+    data_minmax = list(db.dataminmax.find({},{'_id':False}))
+
+    listdata = []
+    listnormaldata = []
+    for i in range(len(data_uji)):
+        data = {
+            "x0": round(data_uji[i]['x0'], 2),
+            "x1": round(data_uji[i]['x1'], 2),
+            "x2": round(data_uji[i]['x2'], 2),
+            "x3": round(data_uji[i]['x3'], 2),
+            "y": round(data_uji[i]['y'], 2),
+        }
+
+        x0normal = (data_uji[i]['x0'] - data_minmax[0]['x0min'])/(data_minmax[0]['x0max'] - data_minmax[0]['x0min'])
+        x1normal = (data_uji[i]['x1'] - data_minmax[0]['x1min'])/(data_minmax[0]['x1max'] - data_minmax[0]['x1min'])
+        x2normal = (data_uji[i]['x2'] - data_minmax[0]['x2min'])/(data_minmax[0]['x2max'] - data_minmax[0]['x2min'])
+        x3normal = (data_uji[i]['x3'] - data_minmax[0]['x3min'])/(data_minmax[0]['x3max'] - data_minmax[0]['x3min'])
+        ynormal = (data_uji[i]['y'] - data_minmax[0]['ymin'])/(data_minmax[0]['ymax'] - data_minmax[0]['ymin'])
+    
+        datanormalisasi = {
+            "x0": round(x0normal, 2),
+            "x1": round(x1normal, 2),
+            "x2": round(x2normal, 2),
+            "x3": round(x3normal, 2),
+            "y": round(ynormal, 2)
+        }
+        listnormaldata.append(datanormalisasi)
+        listdata.append(data)
+
+    return jsonify({"result": "success", "data": listdata, "dataminmax": data_minmax, "normaldata": listnormaldata})
+
+@app.route('/deleteall', methods=["POST"])
+def delall():
+    db.datacurahhujan.delete_many({})
+    db.dataminmax.delete_many({})
+    return jsonify({"result": "success", "msg": "Deleted!"})
+
+@app.route('/initpredict', methods=["POST"])
+def initPredict():
+    predictJST.JSTInitModel()
+    return jsonify({"result": "success"})

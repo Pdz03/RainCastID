@@ -14,7 +14,7 @@ function getClass(result) {
   switch (true) {
     case result == 0:
       classPredict = 'Tidak Hujan';
-      warning = 'Tidak ada perinsagatan karena kemungkinan tidak ada hujan.'
+      warning = 'Tidak ada peringatan karena kemungkinan tidak ada hujan.'
       break;
     case result >= 0.1 && result <= 20:
       classPredict = 'Hujan Sangat Ringan';
@@ -62,10 +62,10 @@ function predictManual (){
 
     $.ajax({
       type: "GET",
-      url: "/getdata",
+      url: "/ambildata",
       data: {},
       success: function (response) {
-        const minmax = response.data.minmax[0];
+        const minmax = response.dataminmax[0];
         const dataInput = {
           temperatur: tempVal,
           kelembaban: lembabVal,
@@ -82,7 +82,7 @@ function predictManual (){
 
         $.ajax({
           type: "POST",
-          url: "/predictModel",
+          url: "/predict",
           data: {
             suhu_give: dataNormal.normalsuhu,
             kelembaban_give: dataNormal.normallembab,

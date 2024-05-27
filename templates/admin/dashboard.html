@@ -178,12 +178,10 @@
         >
         <div id="output"></div>
         <hr />
-        <div class="field">
-          <div class="mb-3">
-            <h4>Epoch</h4>
-            <input class="form-control" type="number" id="input-epoch" />
-          </div>
-        </div>
+        <input type="number" class="form-control" id="epoch">
+        <a class="btn btn-dark" onclick="init_predict()"
+        >Model Init</a
+      >
         <div id="step1">
           <div
             class="modal fade"
@@ -251,47 +249,6 @@
               </div>
             </div>
           </div>
-          <h4>
-            Tahap pertama, hitung pengaruh jumlah hidden neuron dan epoch
-            menggunakan data 2 bulan
-          </h4>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="ujipredict(1)"
-            data-bs-toggle="modal"
-            data-bs-target="#resultHiddenPR"
-          >
-            Hidden 1
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="ujipredict(2)"
-            data-bs-toggle="modal"
-            data-bs-target="#resultHiddenPR"
-          >
-            Hidden 2
-          </button>
-        </div>
-        <hr />
-        <div id="step2">
-          <h4>
-            Tahap kedua, hitung pengaruh jumlah data uji menggunakan hasil
-            terbaik dari tahap pertama
-          </h4>
-          <button class="btn btn-secondary">Data 2 tahun</button>
-          <button class="btn btn-secondary">Data 3 tahun</button>
-          <button class="btn btn-secondary">Data 4 tahun</button>
-        </div>
-        <hr />
-        <div id="step3">
-          <h4>
-            Tahap ketiga, perbandingan hasil prediksi dari tahap kedua dengan
-            hasil data BMKG
-          </h4>
-        </div>
-        <p id="coba">aa</p>
         <div>
           <h1 class="title">Data Uji</h1>
           <table class="table table-striped w-75">
