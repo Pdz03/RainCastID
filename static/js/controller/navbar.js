@@ -51,13 +51,6 @@ function getnavbar(){
               >Forum</a
             >
           </li>
-          <li class="nav-item">
-            <a
-              href="/notifikasi"
-              class="nav-link nav-top fw-bold text-white fs-5"
-              >Notifikasi</a
-            >
-          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link nav-top dropdown-toggle fw-bold text-white fs-5"
@@ -95,11 +88,6 @@ function getnavbar(){
         </li>
         <li class="nav-item">
           <a href="/forum" id="btnForum" class="nav-link nav-top fw-bold text-white fs-5">Forum</a>
-        </li>
-        <li class="nav-item">
-          <a href="#contact" id="btnKontak" class="nav-link nav-top fw-bold text-white fs-5"
-            >Hubungi Kami</a
-          >
         </li>
         <li class="nav-item">
           <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link nav-top fw-bold text-white fs-5"
