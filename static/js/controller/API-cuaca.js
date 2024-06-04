@@ -111,6 +111,7 @@ function predictAPILoc(status){
  function showPosition  (position) {
   let lat = position.coords.latitude;
   let long = position.coords.longitude;
+  $('#cuacaModal').modal('show');
   getWeatherData(lat, long, '')
 }
 
@@ -138,11 +139,109 @@ async function predictDay(type){
   let response = await axios.get('/auth_login');
   let authLogin = await response.data;
   if (authLogin){
-  console.log(authLogin);
+  const contentContainer = document.querySelector('#prediksiAPI');
+  let skeleton = skeletonPredictLoc(4);
+  contentContainer.innerHTML = skeleton;
   let locId = authLogin.data.profile_info.location_id;
-  $('#cuacaModal').modal('show');
+  $('#cuacaUserModal').modal('show');
   let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
-  showWeatherData(APILoc, type);
+  let wData = await getUserWeatherData(APILoc, type);
+
+  const today = new Date();
+  const todayStr =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    today.getDate().toString().padStart(2, "0");
+
+  const day3Str =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    (today.getDate()+2).toString().padStart(2, "0");
+
+  const day2Str =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    (today.getDate()+1).toString().padStart(2, "0");
+
+  if(type==='3day'){
+
+    let tanggal = wData.dTanggal;
+    for(let i=0;i<=tanggal.length;i++){
+      if(tanggal[i] !== todayStr){
+        $(`.${tanggal[i]}`).hide();
+      }
+    }
+
+    $(`#btn-${day3Str}`).on('click', function(){
+        $(`.${todayStr}`).hide();
+        $(`.${day2Str}`).hide();
+        $(`.${day3Str}`).show();
+
+        $(`#btn-${day3Str}`).addClass('active');
+        $(`#btn-${day2Str}`).removeClass('active');
+        $(`#btn-${todayStr}`).removeClass('active');
+    })
+
+    $(`#btn-${day2Str}`).on('click', function(){
+        $(`.${todayStr}`).hide();
+        $(`.${day2Str}`).show();
+        $(`.${day3Str}`).hide();
+
+        $(`#btn-${day2Str}`).addClass('active');
+        $(`#btn-${todayStr}`).removeClass('active');
+        $(`#btn-${day3Str}`).removeClass('active');
+    })
+
+    $(`#btn-${todayStr}`).on('click', function(){
+        $(`.${todayStr}`).show();
+        $(`.${day2Str}`).hide();
+        $(`.${day3Str}`).hide();
+
+        $(`#btn-${todayStr}`).addClass('active');
+        $(`#btn-${day3Str}`).removeClass('active');
+        $(`#btn-${day2Str}`).removeClass('active');
+    })
+  }
+
+  const contentType = 'application/json'; // Adjust based on server expectation
+  const headers = { 'Content-Type': contentType };
+  let response = await axios.post('/predictAPI', JSON.stringify(wData.dCurah), {headers});
+  let hasil = response.data.data;
+  for (let i=0;i<hasil.length;i++){
+    let curahhujan = (hasil[i].hasil).toFixed(2);
+    console.log(curahhujan)
+    const klasifikasi = getClass(curahhujan).classPredict;
+    const warning = getClass(curahhujan).warning;
+    $(`#curahhujan-${i}`).text(`Hasil Prediksi Curah Hujan: ${curahhujan} mm (${klasifikasi})`)
+    .removeClass('text-danger')
+    $(`#warning-${i}`).text(warning);
+  }
+
+  let dataResultAPI = wData.dCurah.map((dataPoint, index) => {
+    return {
+      ...dataPoint,
+      curahHujan: (hasil[index].hasil).toFixed(2),
+    };
+  });
+
+  let dataResult = [{
+    username: authLogin.data.username,
+    date: todayStr,
+    result: dataResultAPI,
+    type: type
+  }]
+
+  $('#btnSaveResult').on('click', async function (){
+    result = await axios.post('/savePredict', JSON.stringify(dataResult), {headers});
+    alert(result.data.result)
+    window.location.reload();
+  })
   }
 }
 
@@ -186,11 +285,129 @@ async function getWeatherData(lat, long, id, store){
       $('#locAPI').text(`Lokasi: ${APILoc.city.name}, ${APILoc.city.country} (Lokasi Tidak Tersimpan)`)
     }
   };
-  showWeatherData(APILoc, 'today');
+
+  const contentContainer = document.querySelector('#prediksiAPI');
+  let template = '';
+  const listResult = APILoc.list;
+  const today = new Date();
+  const todayStr =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    today.getDate().toString().padStart(2, "0");
+  
+  console.log(todayStr)
+  let dataAPI = [];
+  console.log(listResult);
+  for (let i = 0; i < listResult.length; i++) {
+    let dttxt = listResult[i].dt_txt.split(" ")[0];
+    if (dttxt === todayStr) {
+        const time = new Date(listResult[i].dt_txt);
+        const jam = time.getHours();
+        const menit = time.getMinutes();
+        const waktu = jam + ":" + menit.toString().padStart(2, "0");
+        const imgTime = getTimeImage(waktu);
+        dataAPI.push({
+          waktu: waktu,
+          suhu: (listResult[i].main.temp / 10).toFixed(2),
+          kelembaban: listResult[i].main.humidity,
+          kecepatan: listResult[i].wind.speed,
+          tekanan: listResult[i].main.pressure
+        })
+  
+        template += `
+        <div class="row g-0 p-2 align-items-center">
+          <div class="col-md-3 d-flex flex-wrap justify-content-center">
+            <h5 class="text-center">${waktu}</h5>
+            <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
+          </div>
+          <div class="col-md-9">
+            <div class="card-body">
+              <div class="container w-100">
+                <div class="row">
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
+                      <div class="col-10">                          
+                        <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
+                        <p class="card-text">${(listResult[i].main.temp / 10).toFixed(2)} °C</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
+                      <div class="col-10">                     
+                        <h6 class="card-title m-0">Kelembaban Udara</h6>
+                        <p class="card-text">${listResult[i].main.humidity} %</p>
+                      </div> 
+                    </div>   
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2">
+                        <i class="bi bi-wind fs-2"></i>
+                      </div>
+                      <div class="col-10">
+                        <h6 class="card-title m-0">Kecepatan Udara</h6>
+                        <p class="card-text">${listResult[i].wind.speed} m/s</p>
+                      </div> 
+                    </div>              
+                  </div>
+                  <div class="col-6 pt-2">
+                    <div class="row align-items-center">
+                      <div class="col-2">
+                        <i class="bi bi-chevron-double-down fs-2"></i>
+                      </div>
+                      <div class="col-10">
+                        <h6 class="card-title m-0">Tekanan Udara</h6>
+                        <p class="card-text">${listResult[i].main.pressure} hPa</p>                           
+                      </div>  
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                <h6 class="card-title m-0 text-danger" id="curahhujan-${i}">SEDANG PROSES PERHITUNGAN PREDIKSI         <div class="spinner-border" role="status"></div></h6>
+                <p class="card-text text-danger" id="warning-${i}"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        `;
+        
+      }
+  }
+  $.ajax({
+    type: "POST",
+    url: "/predictAPI",
+    data: JSON.stringify(dataAPI),
+    contentType: "application/json",
+    success: function (response) {
+      let hasil = response.data;
+      for (let i=0;i<hasil.length;i++){
+        let curahhujan = (hasil[i].hasil).toFixed(2);
+        const klasifikasi = getClass(curahhujan).classPredict;
+        const warning = getClass(curahhujan).warning;
+        $(`#curahhujan-${i}`).text(`Hasil Prediksi Curah Hujan: ${curahhujan} mm (${klasifikasi})`)
+        .removeClass('text-danger')
+        $(`#warning-${i}`).text(warning)
+      }
+      // const minmax = response.data.minmax[0];
+      // let dataNormal = {
+      //   normalsuhu : ((listResult[i].main.temp / 10)- minmax.x0min) / (minmax.x0max - minmax.x0min),
+      //   normallembab : (listResult[i].main.humidity - minmax.x1min) / (minmax.x1max - minmax.x1min),
+      //   normalcepat : (listResult[i].wind.speed - minmax.x2min) / (minmax.x2max - minmax.x2min),
+      //   normaltekanan : (listResult[i].main.pressure - minmax.x3min) / (minmax.x3max - minmax.x3min),
+      // }      
+    }
+  })
+contentContainer.innerHTML = template;
 }
 
-function showWeatherData(APILoc, type){
-  console.log(type);
+async function getUserWeatherData(APILoc, type){
   const contentContainer = document.querySelector('#prediksiAPI');
   let template = '';
   const listResult = APILoc.list;
@@ -208,9 +425,16 @@ function showWeatherData(APILoc, type){
     (today.getMonth()+1).toString().padStart(2, "0") +
     "-" +
     (today.getDate()+2).toString().padStart(2, "0");
-  console.log(todayStr)
+
+  const day2Str =
+    today.getFullYear() +
+    "-" +
+    (today.getMonth()+1).toString().padStart(2, "0") +
+    "-" +
+    (today.getDate()+1).toString().padStart(2, "0");
+
   let dataAPI = [];
-  console.log(listResult);
+  let dataTanggal = [];
   for (let i = 0; i < listResult.length; i++) {
     let dttxt = listResult[i].dt_txt.split(" ")[0];
     if(type==='today'){
@@ -293,6 +517,21 @@ function showWeatherData(APILoc, type){
       }
   }else if(type === '3day'){
     if (dttxt >= todayStr && dttxt <= day3Str) {
+      dataTanggal.push(dttxt);
+      let btnTanggal = `
+      <button class="btn btn-orange active" id="btn-${todayStr}">${todayStr}</button>
+      <button class="btn btn-orange" id="btn-${day2Str}">${day2Str}</button>
+      <button class="btn btn-orange" id="btn-${day3Str}">${day3Str}</button>
+      `
+      $('#btn-tanggal').html(btnTanggal);
+      let idTanggal = ''
+      if (dttxt === todayStr){
+        idTanggal = todayStr;
+      }else if(dttxt === day2Str){
+        idTanggal = day2Str;
+      }else if(dttxt === day3Str){
+        idTanggal = day3Str;
+      }
       const time = new Date(listResult[i].dt_txt);
       const jam = time.getHours();
       const menit = time.getMinutes();
@@ -307,7 +546,7 @@ function showWeatherData(APILoc, type){
       })
 
       template += `
-      <div class="row g-0 p-2 align-items-center">
+      <div class="row g-0 p-2 align-items-center ${idTanggal}" id="">
         <div class="col-md-3 d-flex flex-wrap justify-content-center">
           <h5 class="text-center">${waktu}</h5>
           <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
@@ -367,159 +606,155 @@ function showWeatherData(APILoc, type){
         </div>
       </div>
       `;
-      
+     
+
     }
   }
   }
-  console.log(dataAPI);
-      $.ajax({
-        type: "POST",
-        url: "/predictAPI",
-        data: JSON.stringify(dataAPI),
-        contentType: "application/json",
-        success: function (response) {
-          console.log(response.data);
-          let hasil = response.data;
-          for (let i=0;i<hasil.length;i++){
-            let curahhujan = (hasil[i].hasil).toFixed(2);
-            const klasifikasi = getClass(curahhujan).classPredict;
-            const warning = getClass(curahhujan).warning;
-            $(`#curahhujan-${i}`).text(`Hasil Prediksi Curah Hujan: ${curahhujan} mm (${klasifikasi})`)
-            .removeClass('text-danger')
-            $(`#warning-${i}`).text(warning)
-          }
-          // const minmax = response.data.minmax[0];
-          // let dataNormal = {
-          //   normalsuhu : ((listResult[i].main.temp / 10)- minmax.x0min) / (minmax.x0max - minmax.x0min),
-          //   normallembab : (listResult[i].main.humidity - minmax.x1min) / (minmax.x1max - minmax.x1min),
-          //   normalcepat : (listResult[i].wind.speed - minmax.x2min) / (minmax.x2max - minmax.x2min),
-          //   normaltekanan : (listResult[i].main.pressure - minmax.x3min) / (minmax.x3max - minmax.x3min),
-          // }      
-        }
-      })
+  
   contentContainer.innerHTML = template;
+
+  let btnEmptyUser = document.getElementById("empty-user");
+  btnEmptyUser.addEventListener("click", function (){
+  $('#prediksiAPI').empty();
+  $('#btn-tanggal').empty();
+});
+
+let wheaterData = {
+  dTanggal: dataTanggal,
+  dCurah: dataAPI
+}
+return wheaterData;
 }
 
-// Mulai prediksi
+async function showHistory(){
+  let response = await axios.get('/showPredict');
+  let historyCuaca = await response.data.data;
 
-predictAPI = () =>{
-    const selectedProvinsi = $('#select-provinsi').val();
-    const selectedKota = $('#select-kota').val();
+  for (let i=0;i<historyCuaca.length;i++){
+    let dataCuaca = historyCuaca[i];
 
-    const daerahFix = document.getElementById('locAPI');
-    daerahFix.innerHTML = `Lokasi: ${selectedKota}, ${selectedProvinsi}`;
-
-    const dataprovfix = selectedProvinsi.replace(/Kep. /g, '');
-    const dataprovnospace = dataprovfix.replace(/\s+/g, '-');
-    const datakotanospace = selectedKota.replace(/\s+/g, '-');
-
-    const urlCuaca = `${dataprovnospace}/${datakotanospace}`;
-
-    axios.get(API_ENDPOINT.kota(urlCuaca))
-    .then((res) => {
-      const paramCuaca = res.data.data;
-      const contentContainer = document.querySelector('#prediksiAPI');
-
-        console.log(paramCuaca)
-        let template = '';
-        for (let i = 0; i <= 3; i += 1) {
-          const dataKelembaban = paramCuaca.params[0].times[i];
-          const dataTemperatur = paramCuaca.params[5].times[i].celcius;
-          const temperaturJadi = dataTemperatur.slice(0, -2);
-          const dataKecepatan = paramCuaca.params[8].times[i];
-          const dataCuaca = paramCuaca.params[6].times[i];
-          const dateTimeString = dataKelembaban.datetime;
-          const timeString = dateTimeString.substring(8);
-          const hour = timeString.substring(0, 2);
-
-          let suffix = 'AM';
-          let formattedHours = hour;
-
-          if (formattedHours >= 12) {
-            suffix = 'PM';
-            if (formattedHours > 12) {
-              formattedHours -= 12;
-            }
-          }
-
-          if (formattedHours === '00') {
-            formattedHours = 12;
-          } else if (formattedHours === '06') {
-            formattedHours = 6;
-          }
-
-          let timesuf = `${formattedHours} ${suffix}`;
-
-          let imgTime = getTimeImage(timesuf);
-
-          template += `
-          <div class="row g-0 p-2 align-items-center">
-          <div class="col-md-3 d-flex flex-wrap justify-content-center">
-            <h5 class="text-center">${timesuf}</h5>
-            <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
-          </div>
-          <div class="col-md-9">
-            <div class="card-body">
-              <div class="container w-100">
-                <div class="row">
-                  <div class="col-6 pt-2">
-                    <div class="row align-items-center">
-                      <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
-                      <div class="col-10">                          
-                        <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
-                        <p class="card-text">${temperaturJadi} °C</p>
+    let templateResult = '';
+      for (let j=0;j<dataCuaca.result.length;j++){
+        const waktu = dataCuaca.result[j].waktu;
+        const imgTime = getTimeImage(waktu);
+        templateResult += `
+        <div class="row g-0 p-2 align-items-center">
+            <div class="col-md-3 d-flex flex-wrap justify-content-center">
+              <h5 class="text-center">${waktu}</h5>
+              <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
+            </div>
+            <div class="col-md-9">
+              <div class="card-body">
+                <div class="container w-100">
+                  <div class="row">
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
+                        <div class="col-10">                          
+                          <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
+                          <p class="card-text">${dataCuaca.result[j].suhu} °C</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
+                        <div class="col-10">                     
+                          <h6 class="card-title m-0">Kelembaban Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].kelembaban} %</p>
+                        </div> 
+                      </div>   
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2">
+                          <i class="bi bi-wind fs-2"></i>
+                        </div>
+                        <div class="col-10">
+                          <h6 class="card-title m-0">Kecepatan Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].kecepatan} m/s</p>
+                        </div> 
+                      </div>              
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2">
+                          <i class="bi bi-chevron-double-down fs-2"></i>
+                        </div>
+                        <div class="col-10">
+                          <h6 class="card-title m-0">Tekanan Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].tekanan} hPa</p>                           
+                        </div>  
                       </div>
                     </div>
                   </div>
-                  <div class="col-6 pt-2">
-                    <div class="row align-items-center">
-                      <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
-                      <div class="col-10">                     
-                        <h6 class="card-title m-0">Kelembaban Udara</h6>
-                        <p class="card-text">${dataKelembaban.value}</p>
-                      </div> 
-                    </div>   
+                  <hr>
+                  <div class="row">
+                  <h6 class="card-title m-0" id="curahhujan-${j}">Hasil Prediksi Curah Hujan: ${dataCuaca.result[j].curahHujan}</h6>
                   </div>
-                  <div class="col-6 pt-2">
-                    <div class="row align-items-center">
-                      <div class="col-2">
-                        <i class="bi bi-wind fs-2"></i>
-                      </div>
-                      <div class="col-10">
-                        <h6 class="card-title m-0">Kecepatan Udara</h6>
-                        <p class="card-text">${dataKecepatan.kph} km/h</p>
-                      </div> 
-                    </div>              
-                  </div>
-                  <div class="col-6 pt-2">
-                    <div class="row align-items-center">
-                      <div class="col-2">
-                        <i class="bi bi-chevron-double-down fs-2"></i>
-                      </div>
-                      <div class="col-10">
-                        <h6 class="card-title m-0">Tekanan Udara</h6>
-                        <p class="card-text">1010 mb</p>                           
-                      </div>  
-                    </div>
-                  </div>
-                </div>
-                <hr>
-                <div class="row">
-                  <h6 class="card-title m-0">Prediksi Curah Hujan: 68 mm (Hujan Ringan)</h6>
-                  <p class="card-text text-danger">WASPADA HUJAN RINGAN!</p> 
                 </div>
               </div>
             </div>
           </div>
+          `;
+      }
+
+    let template = `
+    <tr class="pr-${dataCuaca.type}">
+    <td>${dataCuaca.predictid}</td>
+    <td>${dataCuaca.date}</td>
+    <td>${dataCuaca.type}</td>
+    <td><button class="btn btn-success" data-bs-toggle="modal"
+    data-bs-target="#cuaca-${dataCuaca.predictid}">Lihat Hasil</button>
+    <div
+    class="modal fade"
+    id="cuaca-${dataCuaca.predictid}"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="loginModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header text-white" style="background-color:#648CFF;">
+        <h1 class="modal-title fs-5" id="cuacaModalLabel">Hasil Prediksi</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="sub-title">
+          <h4 class="m-0" id="restitle"></h4>
+          <p id="locAPI"></p>
         </div>
-        `;
-          contentContainer.innerHTML = template;
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        <div id=""></div>
+        <div class="card mb-3 px-3 align-items-end" id="prediksiAPI">
+          ${templateResult}
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+    </td>
+    </tr>
+    `
+    $('#hisPredict').append(template);
+  }
+  $('.pr-3day').hide()
+
+  $('#btn-prtoday').on('click', function(){
+    $('.pr-3day').hide();
+    $('.pr-today').show();
+    $('#btn-prtoday').addClass('active');
+    $('#btn-pr3day').removeClass('active');
+  })
+
+  $('#btn-pr3day').on('click', function(){
+    $('.pr-3day').show();
+    $('.pr-today').hide()
+    $('#btn-prtoday').removeClass('active');
+    $('#btn-pr3day').addClass('active');
+  })
+
 }
-
-
 

@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.ico') }}"
+    type="image/x-icon"
+  />
     <!--Google Font link-->
     <link
       href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
@@ -157,9 +162,93 @@
     </nav>
 
     <section id="home" class="admin">
-      <div class="logoheader"></div>
+      <div class="logoheader">
+        <h1 class="text-white text-center" style="font-size: 5rem;">DASHBOARD ADMIN</h1>
+      </div>
       <div class="container main_home">
-        <h1>Pengujian Backpropagation</h1>
+        <div>
+          <button class="btn btn-orange active" id="btn-uji" onclick="openuji()">
+            Pengujian Backpropagation
+          </button>
+          <button
+            class="btn btn-orange"
+            id="btn-post"
+            onclick="openpost()"
+          >
+            Kelola Postingan
+          </button>
+          <button class="btn btn-orange" id="btn-user" onclick="openuser()">
+            Kelola User
+          </button>
+          <button class="btn btn-orange" id="btn-history" onclick="openhistory()">
+            Kelola Riwayat Prediksi
+          </button>
+        </div>
+        <hr>
+        <div id="section-post">
+          <h2>Data Forum</h2>
+          <hr>
+          <table
+            id="tablepost"
+            class="table table-striped"
+            style="width: 100%"
+          >
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Tanggal Dibuat</th>
+                <th>Isi</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="postlist"></tbody>
+          </table>
+        </div>
+        <div id="section-user">
+          <h2>Data User</h2>
+          <hr>
+          <table
+            id="tableuser"
+            class="table table-striped"
+            style="width: 100%"
+          >
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nama Lengkap</th>
+                <th>Jumlah Postingan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="userlist"></tbody>
+          </table>
+        </div>
+        <div id="section-history">
+          <h2>Data Riwayat Prediksi</h2>
+          <hr>
+          <button class="btn btn-orange active" id="btn-prtoday">
+            Prediksi Harian
+          </button>
+          <button class="btn btn-orange" id="btn-pr3day">
+            Prediksi 3 Hari
+          </button>
+          <hr />
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID Prediksi</th>
+                <th>Username</th>
+                <th>Tanggal Akses</th>
+                <th>Tipe</th>
+                <th>Hasil Prediksi</th>
+              </tr>
+            </thead>
+            <tbody id="hisPredict"></tbody>
+          </table>
+        </div>
+        <div id="section-uji">
+        <h2>Pengujian Backpropagation</h2>
         <hr />
         <div class="field">
           <div class="mb-3">
@@ -178,20 +267,28 @@
         >
         <div id="output"></div>
         <hr />
-        <input type="number" class="form-control" id="epoch">
-        <a class="btn btn-dark" onclick="init_predict()"
+        <input type="number" class="form-control" id="epoch" placeholder="Jumlah Epoch">
+        <input type="number" class="form-control" id="learn" placeholder="Learning Rate">
+        <button class="btn btn-dark" id="btn-init" onclick="init_predict()"
         >Model Init</a
-      >
-        <div id="step1">
-          <div
-            class="modal fade"
-            id="resultHiddenPR"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
+      >          
+      <button
+      type="button"
+      class="btn btn-secondary"
+      onclick="ujipredict()"
+      data-bs-toggle="modal"
+      data-bs-target="#resultHiddenPR"
+    >
+      Uji Prediksi
+    </button>
+    <button
+    type="button"
+    class="btn btn-secondary"
+    onclick="ujibiner()"
+  >
+    Uji Biner
+  </button>
+          <div class="modal fade" id="resultHiddenPR" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="resultHiddenPR" aria-hidden="true">
             <div
               class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
             >
@@ -226,8 +323,8 @@
                     <div class="col">
                       <h5>Grafik Perbandingan</h5>
                       <canvas id="rainChart"></canvas>
-                      <h5>Akurasi Prediksi</h5>
-                      <p id="akurasi"></p>
+                      <!-- <h5>Akurasi Prediksi</h5>
+                      <p id="akurasi"></p> -->
                     </div>
                   </div>
 
@@ -309,6 +406,7 @@
           </table>
         </div>
       </div>
+      </div>
     </section>
     <!--End off Home Sections-->
 
@@ -347,6 +445,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"

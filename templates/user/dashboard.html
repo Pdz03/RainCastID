@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.ico') }}"
+    type="image/x-icon"
+  />
     <!--Google Font link-->
     <link
       href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
@@ -159,13 +164,65 @@
     <!--Cuaca modal-->
     <div
       class="modal fade"
-      id="cuacaModal"
+      id="cuacaUserModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabindex="-1"
       aria-labelledby="loginModalLabel"
       aria-hidden="true"
     ></div>
+
+    <div
+      class="modal fade"
+      id="historyModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div class="modal-content">
+          <div
+            class="modal-header text-white"
+            style="background-color: #648cff"
+          >
+            <h1 class="modal-title fs-5" id="cuacaModalLabel">
+              Riwayat Prediksi
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              id="empty-user"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <button class="btn btn-orange active" id="btn-prtoday">
+              Prediksi Harian
+            </button>
+            <button class="btn btn-orange" id="btn-pr3day">
+              Prediksi 3 Hari
+            </button>
+            <hr />
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID Prediksi</th>
+                  <th>Tanggal Akses</th>
+                  <th>Tipe</th>
+                  <th>Hasil Prediksi</th>
+                </tr>
+              </thead>
+              <tbody id="hisPredict"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <section id="home" class="home">
       <div class="container main_home">
@@ -202,6 +259,7 @@
                 Prediksi 3 Hari
               </button>
               <hr />
+              <div class="visually-hidden">
               <h5 class="fw-semibold">Notifikasi Prediksi Harian</h5>
               <div class="form-check form-switch">
                 <input
@@ -225,9 +283,17 @@
                   >Notifikasi BOT Telegram</label
                 >&nbsp;&nbsp;<a><i class="bi bi-info-circle"></i></a>
               </div>
+            </div>
               <hr />
               <h5 class="fw-semibold">Log Prediksi Curah Hujan</h5>
-              <button class="btn btn-orange">Lihat Log Prediksi</button>
+              <button
+                class="btn btn-orange"
+                data-bs-toggle="modal"
+                data-bs-target="#historyModal"
+                onclick="showHistory()"
+              >
+                Lihat Log Prediksi
+              </button>
             </div>
           </div>
           <div class="col-md-6 border-start border-2">
@@ -294,7 +360,7 @@
                   <button
                     id="btnPredictManual"
                     data-bs-toggle="modal"
-                    data-bs-target="#cuacaModal"
+                    data-bs-target="#cuacaUserModal"
                     class="btn btn-orange px-5 disabled"
                     onclick="predictManual()"
                   >
@@ -324,7 +390,7 @@
     </section>
     <!--End off Home Sections-->
 
-    <section id="contact">
+    <section id="contact" class="mt-5">
       <div class="title text-center fw-bold">Please, contact me here!</div>
       <div class="contact-body row justify-content-center m-0 pt-3">
         <div class="col-lg-6">
@@ -460,6 +526,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"

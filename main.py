@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 from predict import predictFunction, predictJST
 from datetime import datetime, timedelta
 import jwt
-from connect import db
+from connect import db, dbuji
 from werkzeug.utils import secure_filename
 import pandas as pd
 app = Flask(__name__)
@@ -138,7 +138,43 @@ def PredictAPI():
     hasil = predictFunction.predictAPI()
     return jsonify({"result": "success", "data": hasil})
 
-@app.route('/register/check_dup_email', methods=["POST"])
+@app.route('/savePredict', methods=["POST"])
+def savePredict():
+    hasil = list(request.get_json())
+    time = datetime.now().strftime("%m%d%H%M%S")
+    data = {
+        'predictid': f'predict-{time}',
+        'username': hasil[0]['username'],
+        'date': hasil[0]['date'],
+        'result': list(hasil[0]['result']),
+        'type': hasil[0]['type']
+    }
+
+    print(data)
+    db.predict_history.insert_one(data)
+    return jsonify({"result": "success"})
+
+@app.route('/showPredict')
+def showPredict():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"],
+        )
+        username = payload.get('id')
+        history = list(db.predict_history.find({'username': username}, {'_id': False}))
+        return jsonify({"result": "success","data": history})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return jsonify({"result": "fail","msg": "Autentikasi Gagal"})
+
+@app.route('/showPredictAdmin')
+def showPredictAdmin():
+    history = list(db.predict_history.find({}, {'_id': False}))
+    return jsonify({"result": "success","data": history})
+
+@app.route('/register/check_dup_email)', methods=["POST"])
 def check_dup_email():
     email_receive = request.form.get("email_give")
     exists = bool(db.users.find_one({'email': email_receive}))
@@ -644,3 +680,72 @@ def delall():
 def initPredict():
     predictJST.JSTInitModel()
     return jsonify({"result": "success"})
+
+@app.route('/predictUji', methods=["POST"])
+def ujiPredict():
+    hasil = predictFunction.predictUji()
+    return jsonify({"result": "success", "hasil": hasil})
+
+@app.route('/predictUjiBiner', methods=["POST"])
+def ujiPredictBiner():
+    predictJST.JSTUjiBiner()
+    return jsonify({"result": "success"})
+
+@app.route('/upload_input_data', methods=["POST"])
+def upload_input():
+    if "file_give" in request.files:
+        time = datetime.now().strftime("%m%d%H%M%S")
+        file = request.files["file_give"]
+        filename = secure_filename(file.filename)
+        extension = filename.split(".")[-1]
+        filenamefix = f"datainput-{time}.{extension}"
+        file.save("./static/assets/upload_data/" + filenamefix)
+
+        dbuji.datainput.delete_many({})
+
+        df = pd.read_excel(f'./static/assets/upload_data/{filenamefix}', sheet_name='Sheet1', decimal=',')
+        
+        listx0 = []
+        listx1 = []
+        listx2 = []
+        listx3 = []
+        listy = []
+        list=[]
+        for i in df.index:
+            x0 = float(df["x0"][i])
+            x1 = float(df["x1"][i])
+            x2 = float(df["x2"][i])
+            x3 = float(df["x3"][i])
+            y = float(df["y"][i])
+            listx0.append(x0)
+            listx1.append(x1)
+            listx2.append(x2)
+            listx3.append(x3)
+            listy.append(y)
+
+            doc = {
+                "x0": x0,
+                "x1": x1,
+                "x2": x2,
+                "x3": x3,
+                "y": y,
+            }
+            list.append(doc)
+        dbuji.datainput.insert_many(list)
+            
+    return jsonify({"result": "success", "msg": "File uploaded!"})
+
+@app.route('/get_user')
+def get_user():
+    datauser = list(db.users.find({'level':2}))
+    for data in datauser:
+        data["_id"] = str(data["_id"])
+        data['count_post'] = db.posts.count_documents(
+            {"username": data['username']})
+    return jsonify({"result": "success", "msg":"berhasil", "data": datauser})
+
+@app.route("/list_post")
+def list_posts():
+    posts = list(db.posts.find({'confirm': True},{'_id':False}).sort("date", -1).limit(20))
+
+    return jsonify({"result": "success", "msg": "Successful fetched all posts", "posts": posts})

@@ -1,6 +1,6 @@
 $(window).on("load", function () {
   getnavbar();
-  $('#cuacaModal').html(predictModal());
+  $('#cuacaUserModal').html(predictUserModal());
   
     $.ajax({
         type: "GET",

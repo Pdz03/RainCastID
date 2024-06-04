@@ -326,8 +326,37 @@ const predictModal = () => {
           </div>
           <div class="modal-footer">
             <div id="msg"></div>
-            <button id="btnSaveLoc" type="button" class="btn btn-primary visually-hidden" onclick="eventSaveLoc()">Simpan Lokasi</button>
-            <button id="btnDeleteLoc" type="button" class="btn btn-danger visually-hidden" onclick="confirmDelete()">Hapus Lokasi</button>
+            <button id="btnSaveLoc" type="button" class="btn btn-primary" onclick="eventSaveLoc()">Simpan Lokasi</button>
+            <button id="btnDeleteLoc" type="button" class="btn btn-danger" onclick="confirmDelete()">Hapus Lokasi</button>
+          </div>
+        </div>
+      </div>
+  `;
+
+  return template;
+}
+
+const predictUserModal = () => {
+  let template = `
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background-color:#648CFF;">
+            <h1 class="modal-title fs-5" id="cuacaModalLabel">Hasil Prediksi</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="empty-user"></button>
+          </div>
+          <div class="modal-body">
+            <div class="sub-title">
+              <h4 class="m-0" id="restitle"></h4>
+              <p id="locAPI"></p>
+            </div>
+            <div id="btn-tanggal" class="mb-2"></div>
+            <div class="card mb-3 px-3 align-items-end" id="prediksiAPI">
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div id="msg"></div>
+            <button id="btnSaveResult" type="button" class="btn btn-primary">Simpan Hasil Prediksi</button>
           </div>
         </div>
       </div>

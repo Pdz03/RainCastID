@@ -119,6 +119,12 @@ body {
     color:#FFF;
 }
 
+.btn-orange.active{
+    color: #fc6a42;
+    background-color: #ffffff;
+    border-color: #fc6a42;
+}
+
 
 /*
 Home Section style
@@ -168,7 +174,8 @@ fieldset {
 }
 
 .logoheader{
-    height: 150px;
+    height: 250px;
+    padding-top:100px;
     background-color: #648CFF;
 }
 

@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.ico') }}"
+    type="image/x-icon"
+  />
     <!--Google Font link-->
     <link
       href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
@@ -277,7 +283,7 @@
         </div>
       </div>
     </div>
-
+      {% if user_info.profile_info %}
       <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="shareExperienceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
           <div class="modal-content">
@@ -375,6 +381,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
 
               <!--Login modal-->
               <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -390,16 +397,22 @@
                       <img src="/static/assets/{{user_info.profile_pic_real}}" alt="avatar"
                         class="rounded-circle img-fluid" style="width: 150px;">
                       <h5 class="mb-0">@{{user_info.username}}</h5>
+                      {% if user_info.profile_info %}
                       <small>{% if user_info.profile_info.location_name %}{{user_info.profile_info.location_name}}{% else %}-{% endif %}</small>
+                      {% endif %}
                       <hr>
                       <div class="col text-start">
                       <p class="fs-5">{% if user_info.fullname %}{{user_info.fullname}}{% else %}-{% endif %}</p>
+                      {% if user_info.profile_info %}
                       <div class="text-muted">{{user_info.profile_info.bio | safe}}</div>
+                      {% endif %}
                       </div>
                       <hr>
                       <div class="d-flex justify-content-center mb-2">
                         {% if user_login %}
+                        {% if user_info.profile_info %}
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal"><i class="bi bi-pencil-square"></i>&nbsp; Edit Profil</button>
+                        {% endif %}
                         {% endif %}
                         <button type="button" class="btn btn-outline-primary ms-1" data-bs-toggle="modal" data-bs-target="#modalShareProfile"><i class="bi bi-share-fill"></i>&nbsp;Bagikan Profil</button>
                       </div>
@@ -423,6 +436,7 @@
                         </div>
                       </div>
                       <hr>
+                      {% if user_info.profile_info %}
                       <div class="row">
                         <div class="col-sm-4">
                           <p class="mb-0">No. Telepon / WhatsApp</p>
@@ -451,6 +465,7 @@
                           <p class="text-muted mb-0">: {% if user_info.fullname %}55{% else %}-{% endif %}</p>
                         </div>
                       </div>
+                      {% endif %}
                     </div> 
                   </div>
                   {% if user_login %}
