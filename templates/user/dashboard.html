@@ -175,10 +175,9 @@
     <div
       class="modal fade"
       id="historyModal"
-      data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabindex="-1"
-      aria-labelledby="loginModalLabel"
+      aria-labelledby="historyModal"
       aria-hidden="true"
     >
       <div
@@ -247,6 +246,8 @@
               <button
                 class="btn btn-orange"
                 id="btn-predictToday"
+                data-bs-target="#cuacaUserModal"
+                data-bs-toggle="modal"
                 onclick="predictDay('today')"
               >
                 Prediksi Hari Ini
@@ -254,12 +255,13 @@
               <button
                 class="btn btn-orange"
                 id="btn-predict3Day"
+                data-bs-target="#cuacaUserModal"
+                data-bs-toggle="modal"
                 onclick="predictDay('3day')"
               >
                 Prediksi 3 Hari
               </button>
               <hr />
-              <div class="visually-hidden">
               <h5 class="fw-semibold">Notifikasi Prediksi Harian</h5>
               <div class="form-check form-switch">
                 <input
@@ -272,6 +274,8 @@
                   >Notifikasi Browser </label
                 >&nbsp;&nbsp;<a><i class="bi bi-info-circle"></i></a>
               </div>
+              <p id="diff">
+              </p>
               <div class="form-check form-switch">
                 <input
                   class="form-check-input"
@@ -283,7 +287,6 @@
                   >Notifikasi BOT Telegram</label
                 >&nbsp;&nbsp;<a><i class="bi bi-info-circle"></i></a>
               </div>
-            </div>
               <hr />
               <h5 class="fw-semibold">Log Prediksi Curah Hujan</h5>
               <button
@@ -571,5 +574,6 @@
     <script src="/static/js/templates/template-view.js"></script>
 
     <script src="/static/js/helper/otp-helper.js"></script>
+    <script src="/static/js/helper/notification-helper.js"></script>
   </body>
 </html>

@@ -143,7 +143,7 @@ async function predictDay(type){
   let skeleton = skeletonPredictLoc(4);
   contentContainer.innerHTML = skeleton;
   let locId = authLogin.data.profile_info.location_id;
-  $('#cuacaUserModal').modal('show');
+  // $('#cuacaUserModal').modal('show');
   let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
   let wData = await getUserWeatherData(APILoc, type);
 
@@ -215,7 +215,6 @@ async function predictDay(type){
   let hasil = response.data.data;
   for (let i=0;i<hasil.length;i++){
     let curahhujan = (hasil[i].hasil).toFixed(2);
-    console.log(curahhujan)
     const klasifikasi = getClass(curahhujan).classPredict;
     const warning = getClass(curahhujan).warning;
     $(`#curahhujan-${i}`).text(`Hasil Prediksi Curah Hujan: ${curahhujan} mm (${klasifikasi})`)
@@ -242,6 +241,7 @@ async function predictDay(type){
     alert(result.data.result)
     window.location.reload();
   })
+  return dataResultAPI;
   }
 }
 
@@ -297,9 +297,7 @@ async function getWeatherData(lat, long, id, store){
     "-" +
     today.getDate().toString().padStart(2, "0");
   
-  console.log(todayStr)
   let dataAPI = [];
-  console.log(listResult);
   for (let i = 0; i < listResult.length; i++) {
     let dttxt = listResult[i].dt_txt.split(" ")[0];
     if (dttxt === todayStr) {
@@ -705,15 +703,14 @@ async function showHistory(){
     <td>${dataCuaca.predictid}</td>
     <td>${dataCuaca.date}</td>
     <td>${dataCuaca.type}</td>
-    <td><button class="btn btn-success" data-bs-toggle="modal"
-    data-bs-target="#cuaca-${dataCuaca.predictid}">Lihat Hasil</button>
+    <td>
+    <button class="btn btn-success" onclick="$('#cuaca-${dataCuaca.predictid}').modal('show')">Lihat Hasil</button>
     <div
-    class="modal fade"
+    class="modal fade" 
     id="cuaca-${dataCuaca.predictid}"
-    data-bs-backdrop="static"
     data-bs-keyboard="false"
     tabindex="-1"
-    aria-labelledby="loginModalLabel"
+    aria-labelledby="cuaca-${dataCuaca.predictid}"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
@@ -738,6 +735,10 @@ async function showHistory(){
     </td>
     </tr>
     `
+    // $(`#btn-${dataCuaca.predictid}`).on('click', ()=>{
+    //   console.log('buka')
+    //   $(`#cuaca-${dataCuaca.predictid}`).modal('show')
+    // })
     $('#hisPredict').append(template);
   }
   $('.pr-3day').hide()

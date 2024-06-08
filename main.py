@@ -1,14 +1,37 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, Response, render_template, jsonify, request, redirect, url_for
 from predict import predictFunction, predictJST
 from datetime import datetime, timedelta
 import jwt
+import json, os
 from connect import db, dbuji
 from werkzeug.utils import secure_filename
+from pywebpush import webpush, WebPushException
 import pandas as pd
 app = Flask(__name__)
 
 SECRET_KEY = "RAINCASTID"
 TOKEN_KEY = "mytoken"
+
+apiKeys = {
+    'publicKey': 'BKJ2d84U0unTx9Zi0VpoMTdqG0rQLx989ZOnOdu58LDyFjrBCwyD1HP_HdOrF4VRcfMQYUoySKgoFTjz2Ck_H3c',
+    'privateKey': 'HePReX2pYjj9btA7eYnhsV_23KY5Iw_HL_xJ1JctiJ4'
+}
+
+VAPID_PRIVATE_KEY = apiKeys['privateKey']
+VAPID_PUBLIC_KEY = apiKeys["publicKey"]
+
+VAPID_CLAIMS = {
+"sub": "mailto:syaifudinfendip@gmail.com"
+}
+
+def send_web_push(subscription_information, message_body):
+    return webpush(
+        subscription_info=subscription_information,
+        data=message_body,
+        vapid_private_key=VAPID_PRIVATE_KEY,
+        vapid_claims=VAPID_CLAIMS
+    )
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -240,8 +263,6 @@ def login():
         }
         payload = {
             "id": result['username'],
-            # the token will be valid for 24 hours
-            "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
@@ -567,14 +588,129 @@ def deletecomment(idcomment):
     db.comments.delete_one({"commentid": idcomment})
     return jsonify({"result": "success", "msg": "Komentar berhasil dihapus!"})
 
-@app.route('/serviceworker', methods=["POST"])
-def service_worker():
-    response = app.send_static_file('static/js/service/sw.js')
-    response.headers['Content-Type'] = 'application/javascript'
-    print(response)
-    return response
-    
+@app.route("/subscription/", methods=["GET", "POST"])
+def subscription():
+    """
+        POST creates a subscription
+        GET returns vapid public key which clients uses to send around push notification
+    """
 
+    if request.method == "GET":
+        return Response(response=json.dumps({"public_key": VAPID_PUBLIC_KEY}),
+            headers={"Access-Control-Allow-Origin": "*"}, content_type="application/json")
+
+    subscription_token = request.get_json("subscription_token")
+    return Response(status=201, mimetype="application/json")
+
+@app.route("/subscribe", methods=["POST"])
+def subscribe():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]}, {'id': False})
+        subs = request.get_json()
+        new_doc = {
+            'notif_setting':{
+                'botactivated': user_info['notif_setting']['botactivated'],
+                'teleid': user_info['notif_setting']['teleid'],
+                'teleuser':user_info['notif_setting']['teleuser'],
+                'notifbrowser':True,
+                'subscription': subs
+            }
+        }
+        db.users.update_one({"username": payload['id']}, {
+                               "$set": new_doc})
+        return jsonify({"result": "success", "msg": "Sukses!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/unsubscribe", methods=["POST"])
+def unsubscribe():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]}, {'id': False})
+
+        new_doc = {
+            'notif_setting':{
+                'botactivated': user_info['notif_setting']['botactivated'],
+                'teleid': user_info['notif_setting']['teleid'],
+                'teleuser':user_info['notif_setting']['teleuser'],
+                'notifbrowser':False
+            }
+        }
+        db.users.update_one({"username": payload['id']}, {
+                               "$set": new_doc})
+        return jsonify({"result": "success", "msg": "Sukses!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/push_v1/",methods=['POST'])
+def push_v1():
+    message = "Push Test v1"
+    # print("is_json",request.is_json)
+
+    # if not request.json or not request.json.get('sub_token'):
+    #     return jsonify({'failed':1})
+
+    # print("request.json",request.json)
+
+    token = request.json.get('sub_token')
+    try:
+        token = json.loads(token)
+        send_web_push(token, message)
+        return jsonify({'success':1})
+    except Exception as e:
+        print("error",e)
+        return jsonify({'failed':str(e)})
+    
+@app.route('/push_welcome', methods=['POST'])
+def pushwelcome():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]}, {'id': False})
+        message = f'''Selamat Datang di Dashboard, {user_info['fullname']}!
+Jangan lupa lihat prediksi curah hujan hari ini, klik notifikasi ini!'''
+        token = json.dumps(user_info['notif_setting']['subscription'])
+
+        print(token)
+        print(type(token))
+        try:
+            token = json.loads(token)
+            send_web_push(token, message)
+            return jsonify({'success':1})
+        except Exception as e:
+            print("error",e)
+            return jsonify({'failed':str(e)})
+    except:
+        return redirect(url_for("home"))
+
+@app.route('/push_predict', methods=['POST'])
+def pushpredict():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]}, {'id': False})
+        data_curah = request.form["curahhujan"]
+        data_waktu = request.form["waktu"]
+        data_class = request.form["class"]
+        data_warning = request.form["warning"]
+        message = f'''Curah hujan pada pukul {data_waktu} adalah {data_curah} mm ({data_class})
+
+{data_warning}'''
+        token = json.dumps(user_info['notif_setting']['subscription'])
+
+        try:
+            token = json.loads(token)
+            send_web_push(token, message)
+            return jsonify({'success':1})
+        except Exception as e:
+            print("error",e)
+            return jsonify({'failed':str(e)})
+    except:
+        return redirect(url_for("home"))
+    
 # =========== ADMIN ==============
 @app.route('/upload_data', methods=["POST"])
 def upload_data():

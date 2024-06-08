@@ -1,6 +1,14 @@
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
 $(window).on("load", function () {
   getnavbar();
   $('#cuacaUserModal').html(predictUserModal());
+
+  if (urlParams.has('predict')){
+    $("#cuacaUserModal").modal("show");
+    predictDay('today')
+  }
   
     $.ajax({
         type: "GET",
@@ -9,10 +17,10 @@ $(window).on("load", function () {
         success: function (response) {
           $("#loading").fadeOut(500);
             if (response.result == ['success']){
-              console.log(response.data);
               $('#savedLocMember').text(response.data['profile_info']['location_name'])
 
               let locMember = response.data['profile_info']['location_id'];
+              push_predict();
               if (locMember == ""){
                 let helpLoc = document.getElementById('helpLoc');
                 $('#savedLocMember').text('Lokasi tidak tersimpan')
@@ -31,6 +39,15 @@ $(window).on("load", function () {
                   OTP_alert(response.data['username'], response.data['email'])
                 }
 
+                let notifBrowser = response.data['notif_setting']['notifbrowser']
+
+                if(notifBrowser){
+                  $('#notif-browser').attr('checked', 'true');
+                  push_welcome();
+                }else{
+                  $('#notif-browser').removeAttr('checked');
+                }
+                
             } else if (response.result == ['fail']){
                 Swal.fire({
                     title: response.msg,
@@ -63,6 +80,7 @@ $(window).on("load", function () {
        alert($(this).val());
     }
 });
+
 
 });
 
