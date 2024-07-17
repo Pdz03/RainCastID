@@ -146,6 +146,7 @@ async function predictDay(type){
   // $('#cuacaUserModal').modal('show');
   let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
   let wData = await getUserWeatherData(APILoc, type);
+  console.log(wData);
 
   const today = new Date();
   const todayStr =
@@ -168,9 +169,8 @@ async function predictDay(type){
     (today.getMonth()+1).toString().padStart(2, "0") +
     "-" +
     (today.getDate()+1).toString().padStart(2, "0");
-
+  
   if(type==='3day'){
-
     let tanggal = wData.dTanggal;
     for(let i=0;i<=tanggal.length;i++){
       if(tanggal[i] !== todayStr){
@@ -237,9 +237,10 @@ async function predictDay(type){
   }]
 
   $('#btnSaveResult').on('click', async function (){
-    result = await axios.post('/savePredict', JSON.stringify(dataResult), {headers});
-    alert(result.data.result)
-    window.location.reload();
+    console.log(dataResultAPI);
+    // result = await axios.post('/savePredict', JSON.stringify(dataResult), {headers});
+    // alert(result.data.result)
+    // window.location.reload();
   })
   return dataResultAPI;
   }
@@ -604,8 +605,6 @@ async function getUserWeatherData(APILoc, type){
         </div>
       </div>
       `;
-     
-
     }
   }
   }
@@ -633,6 +632,7 @@ async function showHistory(){
     let dataCuaca = historyCuaca[i];
 
     let templateResult = '';
+    if (dataCuaca.type === 'today'){
       for (let j=0;j<dataCuaca.result.length;j++){
         const waktu = dataCuaca.result[j].waktu;
         const imgTime = getTimeImage(waktu);
@@ -697,6 +697,79 @@ async function showHistory(){
           </div>
           `;
       }
+    }else if(dataCuaca.type === '3day'){
+      let btnTanggal = `
+      <button class="btn btn-orange active" id="btn">Tombol Tanggal</button>
+      <button class="btn btn-orange" id="btn">Tombol Tanggal</button>
+      <button class="btn btn-orange" id="btn">Tombol Tanggal</button>
+      `;
+      $('#btn-tanggal').html(btnTanggal);
+
+      for (let j=0;j<dataCuaca.result.length;j++){
+        const waktu = dataCuaca.result[j].waktu;
+        const imgTime = getTimeImage(waktu);
+        templateResult += `
+        <div class="row g-0 p-2 align-items-center">
+            <div class="col-md-3 d-flex flex-wrap justify-content-center">
+              <h5 class="text-center">${waktu}</h5>
+              <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
+            </div>
+            <div class="col-md-9">
+              <div class="card-body">
+                <div class="container w-100">
+                  <div class="row">
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2"><i class="bi bi-thermometer-half fs-2"></i></div>
+                        <div class="col-10">                          
+                          <h6 class="card-title m-0"></i>Temperatur Rata-rata</h6>
+                          <p class="card-text">${dataCuaca.result[j].suhu} °C</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2"><i class="bi bi-droplet-fill fs-2"></i></div> 
+                        <div class="col-10">                     
+                          <h6 class="card-title m-0">Kelembaban Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].kelembaban} %</p>
+                        </div> 
+                      </div>   
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2">
+                          <i class="bi bi-wind fs-2"></i>
+                        </div>
+                        <div class="col-10">
+                          <h6 class="card-title m-0">Kecepatan Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].kecepatan} m/s</p>
+                        </div> 
+                      </div>              
+                    </div>
+                    <div class="col-6 pt-2">
+                      <div class="row align-items-center">
+                        <div class="col-2">
+                          <i class="bi bi-chevron-double-down fs-2"></i>
+                        </div>
+                        <div class="col-10">
+                          <h6 class="card-title m-0">Tekanan Udara</h6>
+                          <p class="card-text">${dataCuaca.result[j].tekanan} hPa</p>                           
+                        </div>  
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                  <h6 class="card-title m-0" id="curahhujan-${j}">Hasil Prediksi Curah Hujan: ${dataCuaca.result[j].curahHujan}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+      }
+    }
 
     let template = `
     <tr class="pr-${dataCuaca.type}">
@@ -704,13 +777,14 @@ async function showHistory(){
     <td>${dataCuaca.date}</td>
     <td>${dataCuaca.type}</td>
     <td>
-    <button class="btn btn-success" onclick="$('#cuaca-${dataCuaca.predictid}').modal('show')">Lihat Hasil</button>
+    <button class="btn btn-success" onclick="$('#${dataCuaca.predictid}').modal('show')">Lihat Hasil</button>
+    <button class="btn btn-danger" onclick="delHistory('${dataCuaca.predictid}')"><i class="bi bi-trash"></i></button>
     <div
     class="modal fade" 
-    id="cuaca-${dataCuaca.predictid}"
+    id="${dataCuaca.predictid}"
     data-bs-keyboard="false"
     tabindex="-1"
-    aria-labelledby="cuaca-${dataCuaca.predictid}"
+    aria-labelledby="${dataCuaca.predictid}"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
@@ -724,7 +798,7 @@ async function showHistory(){
           <h4 class="m-0" id="restitle"></h4>
           <p id="locAPI"></p>
         </div>
-        <div id=""></div>
+        <div id="btn-tanggal" class="mb-2"></div>
         <div class="card mb-3 px-3 align-items-end" id="prediksiAPI">
           ${templateResult}
         </div>
@@ -756,6 +830,41 @@ async function showHistory(){
     $('#btn-prtoday').removeClass('active');
     $('#btn-pr3day').addClass('active');
   })
+
+}
+
+function delHistory(idpredict){
+  Swal.fire({
+    title: "Apakah anda yakin?",
+    text: "Anda akan menghapus data riwayat cuaca ini",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Ya, hapus!"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        type: "POST",
+        url: "/delPredict/"+ idpredict,
+        data: {},
+        success: function (response) {
+          if(response.result=='success'){
+            Swal.fire({
+              title: "Data Terhapus",
+              text: "Data cuaca telah terhapus",
+              icon: "success"
+            }).then((result) => {
+              /* Read more about isConfirmed, isDenied below */
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+            });
+            }
+        }
+      })
+    }
+  });
 
 }
 

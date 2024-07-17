@@ -177,6 +177,11 @@ def savePredict():
     db.predict_history.insert_one(data)
     return jsonify({"result": "success"})
 
+@app.route('/delPredict/<predictid>', methods=["POST"])
+def delPredict(predictid):
+    db.predict_history.delete_one({'predictid':predictid})
+    return jsonify({"result": "success"})
+
 @app.route('/showPredict')
 def showPredict():
     token_receive = request.cookies.get(TOKEN_KEY)
