@@ -9,19 +9,19 @@ from pywebpush import webpush, WebPushException
 import pandas as pd
 app = Flask(__name__)
 
-SECRET_KEY = "RAINCASTID"
-TOKEN_KEY = "mytoken"
+SECRET_KEY = "<secret>"
+TOKEN_KEY = "<token>"
 
 apiKeys = {
-    'publicKey': 'BKJ2d84U0unTx9Zi0VpoMTdqG0rQLx989ZOnOdu58LDyFjrBCwyD1HP_HdOrF4VRcfMQYUoySKgoFTjz2Ck_H3c',
-    'privateKey': 'HePReX2pYjj9btA7eYnhsV_23KY5Iw_HL_xJ1JctiJ4'
+    'publicKey': '<privatekey>',
+    'privateKey': '<publickey>'
 }
 
 VAPID_PRIVATE_KEY = apiKeys['privateKey']
 VAPID_PUBLIC_KEY = apiKeys["publicKey"]
 
 VAPID_CLAIMS = {
-"sub": "mailto:syaifudinfendip@gmail.com"
+"sub": "<sub>"
 }
 
 def send_web_push(subscription_information, message_body):

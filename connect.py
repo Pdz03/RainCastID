@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-MONGODB_CONNECTION_STRING = "mongodb+srv://raincastid:rcastdb@rcastcluster.ef90av6.mongodb.net/?retryWrites=true&w=majority"
+MONGODB_CONNECTION_STRING = "<URL MONGODB STRING>"
 client = MongoClient(MONGODB_CONNECTION_STRING)
 
 # Send a ping to confirm a successful connection
@@ -10,6 +10,6 @@ try:
 except Exception as e:
     print(e)
 
-db = client.raincastdb
-dbuji = client.raincastujidb
+db = '<db1>'
+dbuji = '<db2>'
 
