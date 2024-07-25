@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-    rel="shortcut icon"
-    href="{{ url_for('static', filename='icon.ico') }}"
-    type="image/x-icon"
-  />
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='icon.ico') }}"
+      type="image/x-icon"
+    />
     <!--Google Font link-->
     <link
       href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i"
@@ -111,6 +111,13 @@
           <ul class="navbar-nav ms-auto" id="nav-pc"></ul>
         </div>
       </div>
+    </nav>
+
+    <nav class="fixed-bottom bg-white w-100 px-2 py-1 navmobile">
+      <ul
+        class="navbar-nav d-flex flex-row justify-content-evenly"
+        id="nav-mobile"
+      ></ul>
     </nav>
 
     <div
@@ -223,7 +230,7 @@
       <div class="container">
         <div class="forum-content d-flex justify-content-center">
           <div class="container">
-            <div class="row g-0">
+            <div class="row g-0 d-flex flex-column mb-3">
               <div class="col-sm-6 col-md-8">
                 <article
                   class="blog-details bg-white p-2 border border-1 rounded"

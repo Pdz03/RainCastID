@@ -368,8 +368,17 @@ Featured section style
     font-size: 1.5rem;
 }
 
-.content-container{
-    width:60%;
+
+@media (min-width: 700px) {
+    .content-container{
+        width:60%;
+    }
+}
+
+@media (max-width: 699px) {
+    .content-container{
+        width:100%;
+    }
 }
 
 .skeleton-img-top{

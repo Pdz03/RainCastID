@@ -101,6 +101,115 @@ function getnavbar(){
 })
 }
 
+function getnavbarmob(){
+  $.ajax({
+    type: "GET",
+    url: "/auth_login",
+    data: {},
+    success: function (response) {
+        let temp_navbar = ''
+        if (response.result == ['success']){
+          let warning = ''
+          if (response.data['level'==2]){
+          if (response.data['fullname']=='' ||
+          response.data['profile_info']['location']=='' || 
+          response.data['profile_info']['bio']=='' ||
+          response.data['profile_info']['birth']==''){
+            warning = '<i class="bi bi-exclamation-square-fill text-danger"></i>'
+          }
+        }
+  temp_navbar = `
+  <li class="nav-item">
+          <a
+            href="/dashbpard"
+            id="btnHomeMob"
+            class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+            ><i class="bi bi-house-fill fs-3"></i>
+            <small>Dashboard</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/forum"
+            id="btnForumMob"
+            class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+          >
+            <i class="bi bi-people-fill fs-3"></i>
+            <small>Forum</small>
+          </a>
+        </li>
+        <li class="nav-item">
+        <a
+          href="/user/${response.data['username']}"
+          id="btnFiturMob"
+          class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+        >
+        <i class="bi bi-person-lines-fill fs-3"></i>
+          <small>Profil&nbsp;&nbsp;${warning}</small>
+        </a>
+      </li>
+        <li class="nav-item">
+          <a
+            href=""
+            id="btnLoginMob"
+            data-bs-toggle="modal"
+            data-bs-target="#loginModal"
+            class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+            ><img src="/static/assets/${response.data['profile_pic_real']}" alt="avatar"
+            class="rounded-circle img-fluid" style="width: 30px; margin: 5px 0 3px 0;">
+            <small>Keluar</small>
+          </a>
+        </li>
+  `
+        }else{
+          temp_navbar = `
+          <li class="nav-item">
+                  <a
+                    href="#"
+                    id="btnHomeMob"
+                    class="nav-link fw-bold d-flex flex-column align-items-center navmob active"
+                    ><i class="bi bi-house-fill fs-3"></i>
+                    <small>Beranda</small>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    href="#features"
+                    id="btnFiturMob"
+                    class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+                  >
+                    <i class="bi bi-list fs-3"></i>
+                    <small>Fitur</small>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    href="/forum"
+                    id="btnForumMob"
+                    class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+                  >
+                    <i class="bi bi-people-fill fs-3"></i>
+                    <small>Forum</small>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    href=""
+                    id="btnLoginMob"
+                    data-bs-toggle="modal"
+                    data-bs-target="#loginModal"
+                    class="nav-link fw-bold d-flex flex-column align-items-center navmob"
+                    ><i class="bi bi-person-circle align-middle fs-3"></i>
+                    <small>Masuk</small>
+                  </a>
+                </li>
+          `
+        }
+        $('#nav-mobile').html(temp_navbar);
+      }
+    })
+}
+
 function logout() {
     Swal.fire({
       title: "Apakah anda yakin?",

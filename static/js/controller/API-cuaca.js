@@ -135,6 +135,29 @@ function predictAPILoc(status){
 }
 }
 
+async function dataforNotif(){
+  let response = await axios.get('/auth_login');
+  let authLogin = await response.data;
+  if (authLogin){
+  let locId = authLogin.data.profile_info.location_id;
+  let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
+  let wData = await getUserWeatherData(APILoc, 'today');
+
+  const contentType = 'application/json'; // Adjust based on server expectation
+  const headers = { 'Content-Type': contentType };
+  let response = await axios.post('/predictAPI', JSON.stringify(wData.dCurah), {headers});
+  let hasil = response.data.data;
+  let dataResultAPI = wData.dCurah.map((dataPoint, index) => {
+    return {
+      ...dataPoint,
+      curahHujan: (hasil[index].hasil).toFixed(2),
+    };
+  });
+
+  return dataResultAPI;
+  }
+}
+
 async function predictDay(type){
   let response = await axios.get('/auth_login');
   let authLogin = await response.data;
@@ -146,7 +169,7 @@ async function predictDay(type){
   // $('#cuacaUserModal').modal('show');
   let APILoc = await CuacaSource.cuacaLokasiTerkinibyID(locId);
   let wData = await getUserWeatherData(APILoc, type);
-  console.log(wData);
+  
 
   const today = new Date();
   const todayStr =
@@ -222,12 +245,23 @@ async function predictDay(type){
     $(`#warning-${i}`).text(warning);
   }
 
-  let dataResultAPI = wData.dCurah.map((dataPoint, index) => {
+  let dataResultAPI = '';
+  if (type === '3day'){
+  dataResultAPI = wData.dCurah.map((dataPoint, index) => {
+    return {
+      ...dataPoint,
+      tanggal: wData.dTanggal[index],
+      curahHujan: (hasil[index].hasil).toFixed(2),
+    };
+  });
+}else{
+  dataResultAPI = wData.dCurah.map((dataPoint, index) => {
     return {
       ...dataPoint,
       curahHujan: (hasil[index].hasil).toFixed(2),
     };
   });
+}
 
   let dataResult = [{
     username: authLogin.data.username,
@@ -237,10 +271,9 @@ async function predictDay(type){
   }]
 
   $('#btnSaveResult').on('click', async function (){
-    console.log(dataResultAPI);
-    // result = await axios.post('/savePredict', JSON.stringify(dataResult), {headers});
-    // alert(result.data.result)
-    // window.location.reload();
+    result = await axios.post('/savePredict', JSON.stringify(dataResult), {headers});
+    alert(result.data.result)
+    window.location.reload();
   })
   return dataResultAPI;
   }
@@ -628,10 +661,13 @@ async function showHistory(){
   let response = await axios.get('/showPredict');
   let historyCuaca = await response.data.data;
 
+  const uniqueDates = [];
   for (let i=0;i<historyCuaca.length;i++){
     let dataCuaca = historyCuaca[i];
 
     let templateResult = '';
+    let btnTanggal =  '';
+    
     if (dataCuaca.type === 'today'){
       for (let j=0;j<dataCuaca.result.length;j++){
         const waktu = dataCuaca.result[j].waktu;
@@ -698,18 +734,17 @@ async function showHistory(){
           `;
       }
     }else if(dataCuaca.type === '3day'){
-      let btnTanggal = `
-      <button class="btn btn-orange active" id="btn">Tombol Tanggal</button>
-      <button class="btn btn-orange" id="btn">Tombol Tanggal</button>
-      <button class="btn btn-orange" id="btn">Tombol Tanggal</button>
-      `;
-      $('#btn-tanggal').html(btnTanggal);
-
       for (let j=0;j<dataCuaca.result.length;j++){
         const waktu = dataCuaca.result[j].waktu;
+        const tanggal = dataCuaca.result[j].tanggal;
         const imgTime = getTimeImage(waktu);
+
+        if (!uniqueDates.includes(tanggal)) {
+          // If not, add it to the uniqueDates array
+          uniqueDates.push(tanggal);
+        }
         templateResult += `
-        <div class="row g-0 p-2 align-items-center">
+        <div class="row g-0 p-2 align-items-center ${tanggal}">
             <div class="col-md-3 d-flex flex-wrap justify-content-center">
               <h5 class="text-center">${waktu}</h5>
               <img src="static/assets/images/${imgTime}" style="width:150px;" alt="...">
@@ -769,6 +804,13 @@ async function showHistory(){
           </div>
           `;
       }
+      btnTanggal = `
+      <div id="btn-tanggal-his" class="mb-2">
+      <button class="btn btn-orange active" id="btn-${uniqueDates[0]}">${uniqueDates[0]}</button>
+      <button class="btn btn-orange" id="btn-${uniqueDates[1]}">${uniqueDates[1]}</button>
+      <button class="btn btn-orange" id="btn-${uniqueDates[2]}">${uniqueDates[2]}</button>
+      </div>
+      `;
     }
 
     let template = `
@@ -798,7 +840,7 @@ async function showHistory(){
           <h4 class="m-0" id="restitle"></h4>
           <p id="locAPI"></p>
         </div>
-        <div id="btn-tanggal" class="mb-2"></div>
+        ${btnTanggal}
         <div class="card mb-3 px-3 align-items-end" id="prediksiAPI">
           ${templateResult}
         </div>
@@ -808,11 +850,12 @@ async function showHistory(){
   </div>
     </td>
     </tr>
-    `
+    `;
     // $(`#btn-${dataCuaca.predictid}`).on('click', ()=>{
     //   console.log('buka')
     //   $(`#cuaca-${dataCuaca.predictid}`).modal('show')
     // })
+    
     $('#hisPredict').append(template);
   }
   $('.pr-3day').hide()
@@ -830,6 +873,37 @@ async function showHistory(){
     $('#btn-prtoday').removeClass('active');
     $('#btn-pr3day').addClass('active');
   })
+
+  $(`#btn-${uniqueDates[2]}`).on('click', function(){
+    console.log('hari 2')
+    $(`.${uniqueDates[0]}`).hide();
+    $(`.${uniqueDates[1]}`).hide();
+    $(`.${uniqueDates[2]}`).show();
+
+    $(`#btn-${uniqueDates[2]}`).addClass('active');
+    $(`#btn-${uniqueDates[1]}`).removeClass('active');
+    $(`#btn-${uniqueDates[0]}`).removeClass('active');
+})
+
+$(`#btn-${uniqueDates[1]}`).on('click', function(){
+    $(`.${uniqueDates[0]}`).hide();
+    $(`.${uniqueDates[1]}`).show();
+    $(`.${uniqueDates[2]}`).hide();
+
+    $(`#btn-${uniqueDates[1]}`).addClass('active');
+    $(`#btn-${uniqueDates[0]}`).removeClass('active');
+    $(`#btn-${uniqueDates[2]}`).removeClass('active');
+})
+
+$(`#btn-${uniqueDates[0]}`).on('click', function(){
+    $(`.${uniqueDates[0]}`).show();
+    $(`.${uniqueDates[1]}`).hide();
+    $(`.${uniqueDates[2]}`).hide();
+
+    $(`#btn-${uniqueDates[0]}`).addClass('active');
+    $(`#btn-${uniqueDates[2]}`).removeClass('active');
+    $(`#btn-${uniqueDates[1]}`).removeClass('active');
+})
 
 }
 

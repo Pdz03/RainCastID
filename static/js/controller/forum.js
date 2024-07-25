@@ -1,6 +1,8 @@
 let editor;
 $(window).on("load", function () {
     getnavbar();
+    getnavbarmob();
+    
 $('#loginModal').html(loginModal());
 showHidePass();
 showhidePass2();

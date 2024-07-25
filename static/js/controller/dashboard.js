@@ -3,6 +3,7 @@ const urlParams = new URLSearchParams(queryString);
 
 $(window).on("load", function () {
   getnavbar();
+  getnavbarmob();
   $('#cuacaUserModal').html(predictUserModal());
 
   if (urlParams.has('predict')){

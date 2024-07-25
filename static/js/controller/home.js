@@ -35,6 +35,7 @@ const urlParams = new URLSearchParams(queryString);
 
 $(window).on("load", function () {
   getnavbar();
+  getnavbarmob();
   $('#cuacaModal').html(predictModal());
 
   $.ajax({
@@ -311,100 +312,100 @@ openlogin = () =>{
     $('#title-login').toggleClass("visually-hidden");
 }
 
-const navMobHome = $('#btnHomeMob');
-const navMobFitur = $('#btnFiturMob');
-const navMobForum = $('#btnForumMob');
-const navMobKontak = $('#btnKontakMob');
-const navMobLogin = $('#btnLoginMob');
+// const navMobHome = $('#btnHomeMob');
+// const navMobFitur = $('#btnFiturMob');
+// const navMobForum = $('#btnForumMob');
+// const navMobKontak = $('#btnKontakMob');
+// const navMobLogin = $('#btnLoginMob');
 
-navMobHome.on('click', () => {
-    navMobHome.addClass('active');
-    navMobFitur.removeClass('active');
-    navMobForum.removeClass('active');
-    navMobKontak.removeClass('active');
-    navMobLogin.removeClass('active');
-})
+// navMobHome.on('click', () => {
+//     navMobHome.addClass('active');
+//     navMobFitur.removeClass('active');
+//     navMobForum.removeClass('active');
+//     navMobKontak.removeClass('active');
+//     navMobLogin.removeClass('active');
+// })
 
-navMobFitur.on('click', () => {
-  navMobHome.removeClass('active');
-  navMobFitur.addClass('active');
-  navMobForum.removeClass('active');
-  navMobKontak.removeClass('active');
-  navMobLogin.removeClass('active');
-})
+// navMobFitur.on('click', () => {
+//   navMobHome.removeClass('active');
+//   navMobFitur.addClass('active');
+//   navMobForum.removeClass('active');
+//   navMobKontak.removeClass('active');
+//   navMobLogin.removeClass('active');
+// })
 
-navMobForum.on('click', () => {
-  navMobHome.removeClass('active');
-  navMobFitur.removeClass('active');
-  navMobForum.addClass('active');
-  navMobKontak.removeClass('active');
-  navMobLogin.removeClass('active');
-})
+// navMobForum.on('click', () => {
+//   navMobHome.removeClass('active');
+//   navMobFitur.removeClass('active');
+//   navMobForum.addClass('active');
+//   navMobKontak.removeClass('active');
+//   navMobLogin.removeClass('active');
+// })
 
-navMobKontak.on('click', () => {
-  navMobHome.removeClass('active');
-  navMobFitur.removeClass('active');
-  navMobForum.removeClass('active');
-  navMobKontak.addClass('active');
-  navMobLogin.removeClass('active');
-})
+// navMobKontak.on('click', () => {
+//   navMobHome.removeClass('active');
+//   navMobFitur.removeClass('active');
+//   navMobForum.removeClass('active');
+//   navMobKontak.addClass('active');
+//   navMobLogin.removeClass('active');
+// })
 
-navMobLogin.on('click', () => {
-  navMobHome.removeClass('active');
-  navMobFitur.removeClass('active');
-  navMobForum.removeClass('active');
-  navMobKontak.removeClass('active');
-  navMobLogin.addClass('active');
-})
+// navMobLogin.on('click', () => {
+//   navMobHome.removeClass('active');
+//   navMobFitur.removeClass('active');
+//   navMobForum.removeClass('active');
+//   navMobKontak.removeClass('active');
+//   navMobLogin.addClass('active');
+// })
 
-window.addEventListener('scroll', () => {
-  var windowHeight = window.innerHeight;
-  var homeTarget = document.getElementById('home');
-  var homePosition = homeTarget.getBoundingClientRect();
-  if (homePosition.top <= windowHeight) {
-    navMobHome.addClass('active');
-    navMobFitur.removeClass('active');
-    navMobForum.removeClass('active');
-    navMobKontak.removeClass('active');
-    navMobLogin.removeClass('active');
-  } else {
-    navMobHome.removeClass('active');
-  }
+// window.addEventListener('scroll', () => {
+//   var windowHeight = window.innerHeight;
+//   var homeTarget = document.getElementById('home');
+//   var homePosition = homeTarget.getBoundingClientRect();
+//   if (homePosition.top <= windowHeight) {
+//     navMobHome.addClass('active');
+//     navMobFitur.removeClass('active');
+//     navMobForum.removeClass('active');
+//     navMobKontak.removeClass('active');
+//     navMobLogin.removeClass('active');
+//   } else {
+//     navMobHome.removeClass('active');
+//   }
 
-  var fiturTarget = document.getElementById('features');
-  var fiturPosition = fiturTarget.getBoundingClientRect();
-  if (fiturPosition.top <= windowHeight) {
-    navMobHome.removeClass('active');
-    navMobFitur.addClass('active');
-    navMobForum.removeClass('active');
-    navMobKontak.removeClass('active');
-    navMobLogin.removeClass('active');
-  } else {
-    navMobFitur.removeClass('active');
-  }
+//   var fiturTarget = document.getElementById('features');
+//   var fiturPosition = fiturTarget.getBoundingClientRect();
+//   if (fiturPosition.top <= windowHeight) {
+//     navMobHome.removeClass('active');
+//     navMobFitur.addClass('active');
+//     navMobForum.removeClass('active');
+//     navMobKontak.removeClass('active');
+//     navMobLogin.removeClass('active');
+//   } else {
+//     navMobFitur.removeClass('active');
+//   }
 
-  var forumTarget = document.getElementById('forum');
-  var forumPosition = forumTarget.getBoundingClientRect();
-  if (forumPosition.top <= windowHeight) {
-    navMobHome.removeClass('active');
-    navMobFitur.removeClass('active');
-    navMobForum.addClass('active');
-    navMobKontak.removeClass('active');
-    navMobLogin.removeClass('active');
-  } else {
-    navMobForum.removeClass('active');
-  }
+//   var forumTarget = document.getElementById('forum');
+//   var forumPosition = forumTarget.getBoundingClientRect();
+//   if (forumPosition.top <= windowHeight) {
+//     navMobHome.removeClass('active');
+//     navMobFitur.removeClass('active');
+//     navMobForum.addClass('active');
+//     navMobKontak.removeClass('active');
+//     navMobLogin.removeClass('active');
+//   } else {
+//     navMobForum.removeClass('active');
+//   }
 
-  var kontakTarget = document.getElementById('contact');
-  var kontakPosition = kontakTarget.getBoundingClientRect();
-  if (kontakPosition.top <= windowHeight) {
-    navMobHome.removeClass('active');
-    navMobFitur.removeClass('active');
-    navMobForum.removeClass('active');
-    navMobKontak.addClass('active');
-    navMobLogin.removeClass('active');
-  } else {
-    navMobKontak.removeClass('active');
-  }
+//   var kontakTarget = document.getElementById('contact');
+//   var kontakPosition = kontakTarget.getBoundingClientRect();
+//   if (kontakPosition.top <= windowHeight) {
+//     navMobHome.removeClass('active');
+//     navMobFitur.removeClass('active');
+//     navMobForum.removeClass('active');
+//     navMobKontak.addClass('active');
+//     navMobLogin.removeClass('active');
+//   } else {
+//     navMobKontak.removeClass('active');
+//   }
 
-});
+// });

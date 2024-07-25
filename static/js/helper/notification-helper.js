@@ -127,7 +127,7 @@ function initializeUI() {
 if ('serviceWorker' in navigator && 'PushManager' in window) {
 	console.log('Service Worker and Push is supported');
 
-	navigator.serviceWorker.register("/static/js/service/sw.js")
+	navigator.serviceWorker.register("./static/js/service/sw.js")
 		.then(function(swReg) {
 			console.log('Service Worker is registered', swReg);
 
@@ -174,7 +174,7 @@ function push_welcome() {
 }
 
 async function push_predict(){
-	let dataCuaca = await predictDay('today')
+	let dataCuaca = await dataforNotif();
 	let dataWaktu = [];
 	let dataNotif = [];
 	for(let i=0; i<dataCuaca.length;i++){
